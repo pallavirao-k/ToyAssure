@@ -1,0 +1,6 @@
+com/increff/assure/pojo/ClientsAndCustomerPojo$client_customer_type.class
+com/increff/assure/spring/WebInitializer.class
+com/increff/assure/spring/ControllerConfig.class
+com/increff/assure/pojo/ClientsAndCustomerPojo.class
+com/increff/assure/spring/DbConfig.class
+com/increff/assure/spring/SpringConfig.class
