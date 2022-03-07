@@ -27,17 +27,20 @@ public class BinService extends AbstarctService{
     public BinPojo get(Long id) throws ApiException {
         return getCheckBin(id);
     }
-    public BinPojo protectedGet(Long id){
-        return dao.select(id);
+    public List<BinPojo> getCheckBinIdList(List<Long> binIds){
+        return dao.selectAllBinPojoWithBinIds(binIds);
     }
 
     public List<BinPojo> getAllBins(){
-       return dao.selectAll();
+       return dao.selectAll();// check in case of empty list.
     }
 
-    public void addBinSku(BinSkuPojo binSkuPojo) throws ApiException {
+    public void uploadBinSku(BinSkuPojo binSkuPojo) throws ApiException {
         BinSkuPojo binSkuPojoEx = binSkuDao.select(binSkuPojo.getBinId(), binSkuPojo.getGlobalSkuId());
-        if(Objects.isNull(binSkuPojoEx)) { binSkuDao.insert(binSkuPojo);return; }
+        if(Objects.isNull(binSkuPojoEx)) {
+            binSkuDao.insert(binSkuPojo);
+            return; // avoid return
+        }
         binSkuPojoEx.setQty(binSkuPojo.getQty());
 
     }
@@ -45,8 +48,16 @@ public class BinService extends AbstarctService{
         return getCheck(id);
     }
 
-    public List<BinSkuPojo> getAllBinSku(){
-        return binSkuDao.selectAll();
+
+    public void updateBinSKuQty(Long allocatedQty, Long globalSkuId){
+        List<BinSkuPojo> binSkuPojoList = binSkuDao.selectByGlobalSkuId(globalSkuId);
+        for(BinSkuPojo binSkuPojo:binSkuPojoList){
+            binSkuPojo.setQty(binSkuPojo.getQty()-Math.min(allocatedQty, binSkuPojo.getQty()));
+            allocatedQty = allocatedQty-Math.min(allocatedQty,binSkuPojo.getQty());
+            if(binSkuPojo.getQty()==0){
+                break;
+            }
+        }
     }
 
 

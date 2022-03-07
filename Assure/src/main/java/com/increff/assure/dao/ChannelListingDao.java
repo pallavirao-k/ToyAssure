@@ -1,29 +1,26 @@
 package com.increff.assure.dao;
 
 import com.increff.assure.pojo.ChannelListingPojo;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.TypedQuery;
-
-import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Repository
 public class ChannelListingDao extends GenericDao<ChannelListingPojo> {
 
-    private static String SELECT_BY_GLOBAL_SKU_ID = "select p from ChannelListingPojo where globalSkuId=:globalSkuId";
-    private static String SELECT_BY_CHANNEL_ID_CHANNEL_SKU_ID_CLIENT_ID = "select p from ChannelListingPojo p where channelId=:channelId AND channelSkuId=:channelSkuId AND clientId=:clientId";
 
-    public ChannelListingPojo selectByGlobalSkuId(Long globalSkuId){
-        TypedQuery<ChannelListingPojo> q = getQuery(SELECT_BY_GLOBAL_SKU_ID, ChannelListingPojo.class);
-        q.setParameter("globalSkuId", globalSkuId);
-        return q.getSingleResult();
-    }
-    public ChannelListingPojo selectByChannelAndClient(Long channelId, String channelSkuId, Long clientId){
-        TypedQuery<ChannelListingPojo> q = getQuery(SELECT_BY_CHANNEL_ID_CHANNEL_SKU_ID_CLIENT_ID, ChannelListingPojo.class);
-        q.setParameter("channelId", channelId);
-        q.setParameter("channelSkuId", channelSkuId);
+    private static String SELECT_BY_CLIENT_ID_CHANNEL_ID_CHANNEL_SKU_ID = "select p from ChannelListingPojo p where clientId=:clientId AND channelId=:channelId AND channelSkuId IN (:channelSkuIds)";
+
+
+    public List<ChannelListingPojo> selectByClientIdChannelIdChannelSkuId(Long clientId, Long channelId, List<String> channelSkuIds){
+        TypedQuery<ChannelListingPojo> q = getQuery(SELECT_BY_CLIENT_ID_CHANNEL_ID_CHANNEL_SKU_ID, ChannelListingPojo.class);
         q.setParameter("clientId", clientId);
-        return q.getSingleResult();
+        q.setParameter("channelId", channelId);
+        q.setParameter("channelSkuIds", channelSkuIds);
+        return q.getResultList();
     }
+
 
 
 }

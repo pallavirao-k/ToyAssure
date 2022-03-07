@@ -4,6 +4,7 @@ import com.increff.commons.Data.ProductData;
 import com.increff.commons.Exception.ApiException;
 import com.increff.commons.Form.ProductForm;
 import com.increff.commons.Form.UpdateProductForm;
+import com.increff.commons.Form.UploadProductForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Api
 @RestController()
-@RequestMapping("/api/product")
+@RequestMapping("/api/products")
 public class ProductController {
 
     @Autowired
@@ -20,13 +21,13 @@ public class ProductController {
 
     @ApiOperation(value = "Adds a list of  products")
     @RequestMapping(path = "", method = RequestMethod.POST)
-    public void add(@RequestParam Long clientId, @RequestBody List<ProductForm> formList) throws ApiException{
-        dto.add(clientId, formList);
+    public void add(@RequestBody UploadProductForm uploadProductForm) throws ApiException{
+        dto.add(uploadProductForm);
     }
 
     @ApiOperation(value = "Updates a product")
-    @RequestMapping(path = "/{id}", method = RequestMethod.PUT)
-    public void update(@PathVariable Long id, @RequestBody UpdateProductForm form) throws ApiException{
+    @RequestMapping(path = "", method = RequestMethod.PUT)
+    public void update(@RequestParam Long id, @RequestBody UpdateProductForm form) throws ApiException{
         dto.update(id, form);
 
     }

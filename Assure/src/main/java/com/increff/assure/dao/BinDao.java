@@ -11,7 +11,8 @@ import java.util.List;
 @Repository
 public class BinDao extends GenericDao<BinPojo> {
 
-    private static final String SELECT_ALL_BIN_SKU = "select p from BinSkuPojo p";
+
+    private static final String SELECT_ALL_BINS_USING_BIN_IDS = "select p from BinPojo p where binId IN (:binIds)";
 
 
     public List<BinPojo> insert(List<BinPojo> list){
@@ -23,10 +24,13 @@ public class BinDao extends GenericDao<BinPojo> {
         return returnList;
     }
 
-    public List<BinSkuPojo> selectAllBinSku(){
-        TypedQuery<BinSkuPojo> q = getQuery(SELECT_ALL_BIN_SKU, BinSkuPojo.class);
+    public List<BinPojo> selectAllBinPojoWithBinIds(List<Long> binIds){
+        TypedQuery<BinPojo> q = getQuery(SELECT_ALL_BINS_USING_BIN_IDS, BinPojo.class);
+        q.setParameter("binIds", binIds);
         return q.getResultList();
     }
+
+
 
 
 

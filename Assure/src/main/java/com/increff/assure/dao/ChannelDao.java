@@ -1,5 +1,6 @@
 package com.increff.assure.dao;
 
+import com.increff.assure.pojo.ChannelListingPojo;
 import com.increff.assure.pojo.ChannelPojo;
 import com.increff.commons.Constants.Invoice.*;
 import org.springframework.stereotype.Repository;
@@ -27,9 +28,13 @@ public class ChannelDao extends GenericDao<ChannelPojo> {
         return p;
     }
 
-    public List<ChannelPojo> selectChannelsByInvoiceType(InvoiceType invoiceType){
-        TypedQuery<ChannelPojo> q = getQuery(SELECT_CHANNELS_BY_INVOICE_TYPE, ChannelPojo.class);
-        q.setParameter("type", invoiceType);
-        return q.getResultList();
-    }
+//    public List<ChannelPojo> selectChannelsByInvoiceType(InvoiceType invoiceType){
+//        TypedQuery<ChannelPojo> q = getQuery(SELECT_CHANNELS_BY_INVOICE_TYPE, ChannelPojo.class);
+//        q.setParameter("type", invoiceType);
+//        return q.getResultList();
+//    }
+
+
+
+
 }

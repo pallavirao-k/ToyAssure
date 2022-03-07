@@ -10,7 +10,7 @@ import javax.persistence.*;
 import static com.increff.commons.Constants.ConstantNames.SEQ_CHANNEL_LISTING;
 
 @Entity
-@Table(name="assureChannelListings", indexes=@Index(name="", columnList = "channelId, channelSkuId, clientId", unique=true), uniqueConstraints = @UniqueConstraint(columnNames = "globalSkuId"))
+@Table(name="assureChannelListings", uniqueConstraints={@UniqueConstraint(name="Channel_listing_unq_const", columnNames = {"channelId", "channelSkuId", "clientId"})})
 @Getter
 @Setter
 public class ChannelListingPojo extends AbstractPojo{

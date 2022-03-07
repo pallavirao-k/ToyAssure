@@ -11,5 +11,6 @@ public class ConstantNames {
     public static final String SEQ_ORDER= "seq_order";
     public static final String SEQ_PARTY="seq_party";
     public static final String SEQ_PRODUCT="seq_product";
-
+    public static final Long SEQ_MIN_VAL = 1L;
+    public static final Long SEQ_MAX_VAL = 5000L;
 }

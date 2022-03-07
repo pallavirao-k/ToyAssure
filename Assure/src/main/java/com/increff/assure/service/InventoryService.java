@@ -1,6 +1,7 @@
 package com.increff.assure.service;
 
 import com.increff.assure.dao.InventoryDao;
+import com.increff.assure.pojo.BinSkuPojo;
 import com.increff.assure.pojo.InventoryPojo;
 import com.increff.commons.Exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,33 @@ public class InventoryService {
     @Autowired
     private InventoryDao dao;
 
-    public void add(InventoryPojo ip){
+    public void createInventory(Long id, Long qty){
+        InventoryPojo ip = new InventoryPojo();
+        ip.setGlobalSkuId(id);
+        ip.setAvailableQty(qty);
         dao.insert(ip);
     }
+
+    public void addInventory(BinSkuPojo binSkuPojo) throws ApiException {
+        InventoryPojo ip = get(binSkuPojo.getGlobalSkuId());
+        if(Objects.isNull(ip)){
+            createInventory(binSkuPojo.getGlobalSkuId(), binSkuPojo.getQty());
+        }
+        updateAvailableQty(ip.getId(), binSkuPojo.getQty());
+    }
+
+    public void updateInventory(Long globalSkuId, Long qty) throws ApiException {
+        InventoryPojo ip = getCheckGlobalSkuId(globalSkuId);
+        updateAvailableQty(ip.getId(),qty);
+    }
+
+    public void updateAvailableAndAllocatedQty(Long orderedQty, Long globalSkuId){
+        InventoryPojo inventoryPojo = dao.selectByGlobalSkuId(globalSkuId);
+        inventoryPojo.setAvailableQty(inventoryPojo.getAvailableQty()-Math.min(orderedQty, inventoryPojo.getId()));
+        inventoryPojo.setAllocatedQty(inventoryPojo.getAllocatedQty()+Math.min(orderedQty, inventoryPojo.getId()));
+    }
+
+
 
     public InventoryPojo get(Long globalSkuId){
         return dao.selectByGlobalSkuId(globalSkuId);
@@ -25,8 +50,11 @@ public class InventoryService {
 
     public void updateAvailableQty(Long id, Long qty) throws ApiException {
         InventoryPojo ip = dao.select(id);
-        if(ip.getAllocatedQty()<=qty){ip.setAvailableQty(qty);return;}
-        throw new ApiException("Available quantity cannot be less than Allocated quantity");
+        if(ip.getAllocatedQty()>qty){
+            throw new ApiException("Available quantity cannot be less than Allocated quantity");
+        }
+        ip.setAvailableQty(qty);
+
     }
 
     public InventoryPojo getCheckGlobalSkuId(Long id) throws ApiException {
@@ -34,4 +62,5 @@ public class InventoryService {
         if(Objects.isNull(ip))throw  new ApiException("Inventory with Global SKU ID: "+id+" doesn't exist");
         return ip;
     }
+
 }

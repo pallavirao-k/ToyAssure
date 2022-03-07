@@ -1,11 +1,13 @@
 package com.increff.commons.Form;
 
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@Setter
 public class ProductForm  {
 
     @NotNull
@@ -15,6 +17,7 @@ public class ProductForm  {
     @NotNull
     private String brandId;
     @NotNull
+    @Min(value = 1)
     private Double productMrp;
     @NotNull
     private String description;

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public class BinSkuDao extends GenericDao<BinSkuPojo> {
     private static String SELECT_BY_BINID_GLOBAL_SKUID = "select p from BinSkuPojo p where binId=:binId AND globalSkuId=:globalSkuId ";
-    private static String select_all = "select p from BinSkuPojo p";
+    private static String SELECT_BY_GLOBAL_SKU_ID = "select p from BinSkuPojo p where globalSkuId=:globalSkuId";
 
     public BinSkuPojo select(Long binId, Long globalSkuId){
         BinSkuPojo bsp;
@@ -25,6 +25,13 @@ public class BinSkuDao extends GenericDao<BinSkuPojo> {
         }
         return bsp;
     }
+
+    public List<BinSkuPojo> selectByGlobalSkuId(Long globalSkuId){
+        TypedQuery<BinSkuPojo> q = getQuery(SELECT_BY_GLOBAL_SKU_ID, BinSkuPojo.class);
+        q.setParameter("globalSkuId", globalSkuId);
+        return q.getResultList();
+    }
+
 
 
 }

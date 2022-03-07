@@ -17,7 +17,7 @@ import java.util.List;
 
 @Api
 @RestController()
-@RequestMapping("/api/party")
+@RequestMapping("/api/parties")
 public class PartyController {
 
     @Autowired
@@ -25,7 +25,7 @@ public class PartyController {
 
     @ApiOperation(value = "Adds a party")
     @RequestMapping(path = "", method = RequestMethod.POST)
-    public void add(@Valid @RequestBody PartyForm form) throws ApiException{
+    public void add(@RequestBody PartyForm form) throws ApiException{
         dto.add(form);
     }
 

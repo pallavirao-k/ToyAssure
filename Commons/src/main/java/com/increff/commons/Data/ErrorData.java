@@ -13,12 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 public class ErrorData {
 
-    private Long idx;
-    private String message;
-
-    public static String convert(List<ErrorData> errorDataList){
+    public static<T> String convert(String message, List<T> errorList){
         try{
-            return JSONUtil.serialize(errorDataList);
+            return message+" "+JSONUtil.serialize(errorList);
         }catch (JSONException e){
             return "unable to convert error list to json";
         }

@@ -3,8 +3,8 @@ import com.increff.assure.dto.BinDto;
 import com.increff.commons.Data.BinData;
 import com.increff.commons.Data.BinSkuData;
 import com.increff.commons.Exception.ApiException;
-import com.increff.commons.Form.BinSkuForm;
 import com.increff.commons.Form.UpdateBinSkuForm;
+import com.increff.commons.Form.UploadBinSkuForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Api
 @RestController
-@RequestMapping("/api/bin")
+@RequestMapping("/api/bins")
 public class BinController {
 
     @Autowired
@@ -26,6 +26,7 @@ public class BinController {
         return dto.add(qty);
     }
 
+
     @ApiOperation(value = "Gets all bins")
     @RequestMapping(path = "", method = RequestMethod.GET)
     public List<BinData> getAllBins() throws ApiException {
@@ -33,26 +34,20 @@ public class BinController {
     }
 
     @ApiOperation(value = "Adds Bin wise inventory against clientId")
-    @RequestMapping(path = "/sku/add/", method = RequestMethod.POST)
-    public void addBinSku(@RequestParam Long clientId, @RequestBody List<BinSkuForm> binSkuList) throws ApiException {
-        dto.addBinSku(clientId, binSkuList);
+    @RequestMapping(path = "/skus", method = RequestMethod.POST)
+    public void uploadBinSku(@RequestBody UploadBinSkuForm uploadBinSkuForm) throws ApiException {  //change name and mapping
+        dto.uploadBinSku(uploadBinSkuForm);
     }
+
 
     @ApiOperation(value = "Updates a Bin wise inventory")
-    @RequestMapping(path = "/sku/update/{id}", method = RequestMethod.POST)
-    public void UpdateBinSku(@PathVariable Long id, @RequestBody UpdateBinSkuForm binSkuForm) throws ApiException {
-        dto.updateBinSku(id, binSkuForm);
-    }
-
-
-    @ApiOperation(value = "Gets all BinSku")
-    @RequestMapping(path = "/sku", method=RequestMethod.GET)
-    public List<BinSkuData> getAllBinSku() throws ApiException {
-        return dto.getAllBinSku();
+    @RequestMapping(path = "/skus/{id}", method = RequestMethod.PUT)
+    public void UpdateSingleBinSku(@RequestParam Long id, @RequestBody UpdateBinSkuForm binSkuForm) throws ApiException {
+        dto.updateSingleBinSku(id, binSkuForm);
     }
 
     @ApiOperation(value = "Gets a BinSku by Id")
-    @RequestMapping(path = "/sku/{id}", method=RequestMethod.GET)
+    @RequestMapping(path = "/skus/{id}", method=RequestMethod.GET)
     public BinSkuData getBinSku(@PathVariable Long id) throws ApiException {
         return dto.getBinSku(id);
     }

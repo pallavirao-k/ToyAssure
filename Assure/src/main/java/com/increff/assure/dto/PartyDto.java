@@ -22,7 +22,8 @@ public class PartyDto extends AbstractDto {
 
 
     public void add(PartyForm form) throws ApiException{
-        validatePartyForm(form);
+        formValidation(form);
+        checkName(form);
         PartyPojo p = convert(form,PartyPojo.class);
         normalize(p);
         service.add(p);
@@ -41,6 +42,12 @@ public class PartyDto extends AbstractDto {
     public List<PartyData> getPartyByType(PartyType p){
         List<PartyPojo> listPojo = service.getPartyByType(p);
         return listPojo.stream().map(x->convert(x,PartyData.class)).collect(Collectors.toList());
+    }
+
+    public void checkName(PartyForm form) throws ApiException {
+        if(form.getPartyName().trim().isEmpty()){
+            throw new ApiException("Party Name must not be empty");
+        }
     }
 
 }

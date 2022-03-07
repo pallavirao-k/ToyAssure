@@ -31,5 +31,5 @@ public class OrderPojo extends AbstractPojo{
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status.ProductStatus productStatus;
+    private Status.ProductStatus productStatus = Status.ProductStatus.CREATED;
 }

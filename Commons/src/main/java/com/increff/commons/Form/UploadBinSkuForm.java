@@ -9,12 +9,12 @@ import java.util.List;
 
 @Getter
 @Setter
-public class UploadChannelListingForm {
+public class UploadBinSkuForm {
+
     @NotNull
-    private String clientName;
-    @NotNull
-    private String channelName;
+    private Long clientId;
     @NotNull
     @Valid
-    private List<ChannelListingForm> formList;
+    private List<BinSkuForm> formList;
+
 }
