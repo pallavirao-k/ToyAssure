@@ -34,7 +34,7 @@ public class BinDto extends AbstractDto {
     private InventoryService inventoryService;
 
     public List<BinData> add(Long qty) throws ApiException {
-        checkLimit(qty);
+        checkLimit(qty, "Bins count");
         return convert(service.add(getBinPojo(qty)),BinData.class);
     }
 
@@ -52,7 +52,7 @@ public class BinDto extends AbstractDto {
         checkClientSkuId(uploadBinSkuForm.getClientId(), uploadBinSkuForm.getFormList());
         for(BinSkuForm binSkuForm:uploadBinSkuForm.getFormList()) {
             BinSkuPojo binSkuPojo = convertBinSkuForm(uploadBinSkuForm.getClientId(),binSkuForm);
-            service.uploadBinSku(binSkuPojo);
+            service.addBinSku(binSkuPojo);
             inventoryService.addInventory(binSkuPojo);
         }
     }

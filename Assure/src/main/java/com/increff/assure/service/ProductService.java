@@ -19,7 +19,9 @@ public class ProductService extends AbstarctService{
     public void add(Long id, List<ProductPojo> productPojoList) throws ApiException {
         for(ProductPojo p :productPojoList) {
             ProductPojo exists = dao.selectByClientSkuIdAndClientId(p.getClientSkuId(), id);
-           if(Objects.nonNull(exists))continue;
+           if(Objects.nonNull(exists)){
+               continue;
+           }
            dao.insert(p);
         }
     }
@@ -58,7 +60,7 @@ public class ProductService extends AbstarctService{
     }
 
     public List<ProductPojo> getByClientSkuIdAndClientIds(Long clientId, List<String> clientSkuIds){
-        return dao.selectByClientIdAndClientSkuIds(clientId,clientSkuIds);
+        return dao.selectByClientIdAndClientSkuIds(clientId,clientSkuIds); // partitioning and check for empty list
     }
 
 

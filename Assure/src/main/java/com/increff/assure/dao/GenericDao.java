@@ -8,7 +8,10 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.increff.commons.Constants.ConstantNames.PARTITION_SIZE;
 
 @Repository
 public class GenericDao<T> {
@@ -57,5 +60,15 @@ public class GenericDao<T> {
 
     protected Class<T> getC(){
         return (Class<T>) GenericTypeResolver.resolveTypeArgument(getClass(), GenericDao.class);
+    }
+
+    protected <T> List<List<T>> partition(List<T> list){
+        Long partitionSize = PARTITION_SIZE;
+        List<List<T>> partitions = new ArrayList<>();
+
+        for (int i=0; i<list.size(); i += partitionSize) {
+            partitions.add(list.subList(i, Math.min(i + partitionSize.intValue(), list.size())));
+        }
+        return partitions;
     }
 }

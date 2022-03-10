@@ -22,12 +22,14 @@ public class ChannelService extends AbstarctService {
     @Autowired
     private ChannelListingDao channelListingDao;
 
-    public void addChannel(ChannelPojo p) throws ApiException {
+    public ChannelPojo addChannel(ChannelPojo p) throws ApiException {
         normalize(p);
-        ChannelPojo ex = dao.selectByName(p.getChannelName());
-        if(Objects.nonNull(ex))
-            throw new ApiException( "Channel with name "+p.getChannelName()+" already exists");
+        ChannelPojo exists = dao.selectByName(p.getChannelName());
+        if(Objects.nonNull(exists)) {
+            return exists;
+        }
         dao.insert(p);
+        return p;
     }
 
     public ChannelPojo getChannel(Long id) throws ApiException {
@@ -51,15 +53,6 @@ public class ChannelService extends AbstarctService {
         return cp;
     }
 
-    public void addChannelListing(List<ChannelListingPojo> pojoList) throws ApiException {
-        normalize(pojoList);
-        for(ChannelListingPojo pojo : pojoList){
-            channelListingDao.insert(pojo);
-        }
-    }
 
-    public List<ChannelListingPojo> getByClientIdChannelIdChannelSkuId(Long clientId, Long channelId, List<String> channelSkuIds){
-        return channelListingDao.selectByClientIdChannelIdChannelSkuId(clientId, channelId, channelSkuIds);
-    }
 
 }

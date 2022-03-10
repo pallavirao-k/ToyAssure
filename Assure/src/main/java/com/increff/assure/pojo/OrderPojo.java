@@ -1,6 +1,6 @@
 package com.increff.assure.pojo;
 
-import com.increff.commons.Constants.Status;
+import com.increff.commons.Constants.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,5 +31,5 @@ public class OrderPojo extends AbstractPojo{
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private Status.ProductStatus productStatus = Status.ProductStatus.CREATED;
+    private OrderStatus orderStatus;
 }

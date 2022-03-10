@@ -6,7 +6,7 @@ import javax.persistence.*;
 import static com.increff.commons.Constants.ConstantNames.SEQ_PARTY;
 
 @Entity
-@Table(name="assureParty", indexes =@Index(name="member_index", columnList = "partyName, partyType", unique=true))
+@Table(name="assureParty", uniqueConstraints =@UniqueConstraint(name="unq_const_party", columnNames = {"partyName", "partyType"}))
 @Getter @Setter
 public class PartyPojo extends AbstractPojo{
 	@Id

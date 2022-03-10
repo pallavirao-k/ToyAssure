@@ -9,15 +9,12 @@ import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
-public class OrderForm {
+public class OrderItemWithChannelSkuId {
 
     @NotNull
-    private String clientSkuId;
+    private String channelSkuId;
     @NotNull
-    @Min(value = 1)
-    @Max(value = 5000)
+    @Min(value=1L)
+    @Max(value = 5000L)
     private Long qty;
-    @NotNull
-    @Min(value = 1)
-    private Double sellingPricePerUnit;
 }

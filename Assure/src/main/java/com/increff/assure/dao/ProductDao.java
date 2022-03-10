@@ -8,13 +8,14 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class ProductDao extends GenericDao<ProductPojo> {
 
-    private static final String SELECT_BY_CLIENT_SKU_ID_CLIENT_ID= "select p from ProductPojo p where clientSkuId=:clientSkuId AND clientId=:clientId";
-    private static final String SELECT_BY_CLIENT_ID_AND_CLIENT_SKU_IDS="select p from ProductPojo p where clientId=:clientId AND clientSkuId IN (:clientSkuIds)";
+    private static final String SELECT_BY_CLIENT_SKU_ID_CLIENT_ID = "select p from ProductPojo p where clientSkuId =: clientSkuId AND clientId =: clientId";
+    private static final String SELECT_BY_CLIENT_ID_AND_CLIENT_SKU_IDS = "select p from ProductPojo p where clientId =: clientId AND clientSkuId IN (:clientSkuIds)";
 
 
     public ProductPojo selectByClientSkuIdAndClientId(String clientSkuId, Long clientId){
@@ -31,11 +32,18 @@ public class ProductDao extends GenericDao<ProductPojo> {
     }
 
     public List<ProductPojo> selectByClientIdAndClientSkuIds(Long clientId, List<String> clientSkuIds){
-        TypedQuery<ProductPojo> q = getQuery(SELECT_BY_CLIENT_ID_AND_CLIENT_SKU_IDS, ProductPojo.class);
-        q.setParameter("clientId", clientId);
-        q.setParameter("clientSkuIds", clientSkuIds);
-        return q.getResultList();
+        List<ProductPojo> finalList = new ArrayList<>();
+        for(List<String> partitionedClientSkuIds :partition(clientSkuIds)) {
+            TypedQuery<ProductPojo> q = getQuery(SELECT_BY_CLIENT_ID_AND_CLIENT_SKU_IDS, ProductPojo.class);
+            q.setParameter("clientId", clientId);
+            q.setParameter("clientSkuIds", partitionedClientSkuIds);
+            finalList.addAll(q.getResultList());
+        }
+        return finalList;
     }
+
+    // test for no result exception ie .
+    // add singleOrNull function in Generic Dao.
 
 
 

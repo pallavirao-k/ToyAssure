@@ -19,7 +19,6 @@ public class BinController {
     @Autowired
     private BinDto dto;
 
-
     @ApiOperation(value = "Adds bins")
     @RequestMapping(path = "", method = RequestMethod.POST)
     public List<BinData> add(@RequestParam Long qty) throws ApiException {
@@ -35,14 +34,14 @@ public class BinController {
 
     @ApiOperation(value = "Adds Bin wise inventory against clientId")
     @RequestMapping(path = "/skus", method = RequestMethod.POST)
-    public void uploadBinSku(@RequestBody UploadBinSkuForm uploadBinSkuForm) throws ApiException {  //change name and mapping
+    public void uploadBinSkus(@RequestBody UploadBinSkuForm uploadBinSkuForm) throws ApiException {  //change name and mapping
         dto.uploadBinSku(uploadBinSkuForm);
     }
 
 
     @ApiOperation(value = "Updates a Bin wise inventory")
     @RequestMapping(path = "/skus/{id}", method = RequestMethod.PUT)
-    public void UpdateSingleBinSku(@RequestParam Long id, @RequestBody UpdateBinSkuForm binSkuForm) throws ApiException {
+    public void updateBinSku(@RequestParam Long id, @RequestBody UpdateBinSkuForm binSkuForm) throws ApiException {
         dto.updateSingleBinSku(id, binSkuForm);
     }
 

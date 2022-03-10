@@ -10,7 +10,7 @@ import javax.persistence.*;
 import static com.increff.commons.Constants.ConstantNames.SEQ_PRODUCT;
 
 @Entity
-@Table(name="assureProduct", indexes=@Index(name="product_index", columnList = "clientSkuId, clientId", unique = true))
+@Table(name="assureProduct", uniqueConstraints=@UniqueConstraint(name="unq_const_product", columnNames = {"clientSkuId", "clientId"}))
 @Getter @Setter
 public class ProductPojo extends AbstractPojo{
     @Id

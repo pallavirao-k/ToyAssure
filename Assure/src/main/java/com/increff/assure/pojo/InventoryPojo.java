@@ -1,8 +1,6 @@
 package com.increff.assure.pojo;
 
-import com.sun.istack.NotNull;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -10,8 +8,9 @@ import javax.persistence.*;
 import static com.increff.commons.Constants.ConstantNames.SEQ_INVENTORY;
 
 @Entity
-@Table(name="assureInventory", indexes=@Index(name="inventory_index", columnList = "globalSkuId", unique = true))
-@Getter @Setter
+@Table(name="assureInventory", uniqueConstraints=@UniqueConstraint(name="unq_const_inventory", columnNames = {"globalSkuId"}))
+@Getter
+@Setter
 public class InventoryPojo extends AbstractPojo{
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE, generator = SEQ_INVENTORY)

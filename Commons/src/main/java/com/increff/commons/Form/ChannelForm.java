@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class ChannelForm {
     @NotNull
-    private String channelName = "Internal" ;
+    private String channelName = "internal";// donot do it here.
     @NotNull
     private InvoiceType invoiceType = InvoiceType.SELF;
 }

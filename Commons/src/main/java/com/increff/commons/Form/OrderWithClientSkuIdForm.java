@@ -9,12 +9,15 @@ import java.util.List;
 
 @Getter
 @Setter
-public class UploadChannelListingForm {
+public class OrderWithClientSkuIdForm {
+
     @NotNull
     private Long clientId;
     @NotNull
-    private Long channelId;
+    private String channelOrderId;
+    @NotNull
+    private Long customerId;
     @NotNull
     @Valid
-    private List<ChannelListingForm> channelListings;
+    private List<OrderItemWithClientSkuId> formList;
 }

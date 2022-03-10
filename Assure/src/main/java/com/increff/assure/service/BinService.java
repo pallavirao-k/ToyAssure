@@ -32,16 +32,16 @@ public class BinService extends AbstarctService{
     }
 
     public List<BinPojo> getAllBins(){
-       return dao.selectAll();// check in case of empty list.
+       return dao.selectAll();
     }
 
-    public void uploadBinSku(BinSkuPojo binSkuPojo) throws ApiException {
+    public void addBinSku(BinSkuPojo binSkuPojo) throws ApiException {
         BinSkuPojo binSkuPojoEx = binSkuDao.select(binSkuPojo.getBinId(), binSkuPojo.getGlobalSkuId());
-        if(Objects.isNull(binSkuPojoEx)) {
-            binSkuDao.insert(binSkuPojo);
-            return; // avoid return
+        if(Objects.nonNull(binSkuPojoEx)) {
+            binSkuPojoEx.setQty(binSkuPojo.getQty());
+            return;
         }
-        binSkuPojoEx.setQty(binSkuPojo.getQty());
+        binSkuDao.insert(binSkuPojo);
 
     }
     public BinSkuPojo getBinSku(Long id) throws ApiException {
@@ -49,17 +49,17 @@ public class BinService extends AbstarctService{
     }
 
 
-    public void updateBinSKuQty(Long allocatedQty, Long globalSkuId){
+    public void updateBinSkuQty(Long allocatedQty, Long globalSkuId){
         List<BinSkuPojo> binSkuPojoList = binSkuDao.selectByGlobalSkuId(globalSkuId);
         for(BinSkuPojo binSkuPojo:binSkuPojoList){
-            binSkuPojo.setQty(binSkuPojo.getQty()-Math.min(allocatedQty, binSkuPojo.getQty()));
-            allocatedQty = allocatedQty-Math.min(allocatedQty,binSkuPojo.getQty());
-            if(binSkuPojo.getQty()==0){
+            Long qtyToPut = Math.min(allocatedQty, binSkuPojo.getQty());
+            binSkuPojo.setQty(binSkuPojo.getQty()-qtyToPut);
+            allocatedQty = allocatedQty-qtyToPut;
+            if(allocatedQty==0){
                 break;
             }
         }
     }
-
 
     public BinSkuPojo get(Long binId, Long globalSkuId){
         return binSkuDao.select(binId, globalSkuId);

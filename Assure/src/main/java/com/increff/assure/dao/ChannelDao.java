@@ -13,7 +13,6 @@ import java.util.List;
 public class ChannelDao extends GenericDao<ChannelPojo> {
 
     private static final String SELECT_BY_NAME = "select p from ChannelPojo p where channelName=:name";
-    private static final String SELECT_CHANNELS_BY_INVOICE_TYPE = "select p from ChannelPojo p where invoiceType=:type";
 
 
     public ChannelPojo selectByName(String name){
@@ -28,11 +27,6 @@ public class ChannelDao extends GenericDao<ChannelPojo> {
         return p;
     }
 
-//    public List<ChannelPojo> selectChannelsByInvoiceType(InvoiceType invoiceType){
-//        TypedQuery<ChannelPojo> q = getQuery(SELECT_CHANNELS_BY_INVOICE_TYPE, ChannelPojo.class);
-//        q.setParameter("type", invoiceType);
-//        return q.getResultList();
-//    }
 
 
 

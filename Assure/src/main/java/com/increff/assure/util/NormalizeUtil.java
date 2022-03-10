@@ -1,45 +1,44 @@
 package com.increff.assure.util;
 
+import com.increff.assure.pojo.*;
 import com.increff.commons.Exception.ApiException;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NormalizeUtil {
 
-    public static <T> void normalize(T targetObject) throws ApiException {
-        List<Field> fieldList = getFields(targetObject);
+    public static void normalize(PartyPojo partyPojo){
+        partyPojo.setPartyName(partyPojo.getPartyName().trim().toLowerCase());
+    }
 
-        for(Field field : fieldList){
-            field.setAccessible(true);
-            if(field.getType().equals(java.lang.String.class)){
-                try {
-                    String value = (String) field.get(targetObject);
-                    if (value != null) {
-                        field.set(targetObject, value.toLowerCase().trim());
-                    }
-                }catch(Exception e){
-                    throw new ApiException("Bad normalization");
-                }
-            }
+    public static void normalize(ProductPojo productPojo){
+        productPojo.setProductName(productPojo.getProductName().trim().toLowerCase());
+        productPojo.setDescription(productPojo.getDescription().trim().toLowerCase());
+    }
+
+    public static void normalize(List<ProductPojo> pojoList){
+        for(ProductPojo productPojo: pojoList){
+            normalize(productPojo);
         }
     }
 
-    public static <T> void normalize(List<T> tragetObjectList) throws ApiException {
-        for(T obj:tragetObjectList){
-            normalize(obj);
-        }
+    public static void normalize(ChannelPojo channelPojo){
+        channelPojo.setChannelName(channelPojo.getChannelName().trim().toLowerCase());
     }
 
-    private static <T>List<Field> getFields(T targetObject){
-        List<Field>fieldsToReturn = new ArrayList<>();
-        Class clazz = targetObject.getClass();
-        while(clazz != Object.class){
-            fieldsToReturn.addAll(Arrays.asList(clazz.getDeclaredFields()));
-            clazz = clazz.getSuperclass();
-        }
-        return fieldsToReturn;
+    public static void normalize(ChannelListingPojo channelListingPojo){
+
     }
+
+    public static void normalize(OrderPojo orderPojo){
+
+    }
+
+
+
+
 }

@@ -10,7 +10,7 @@ import javax.persistence.*;
 import static com.increff.commons.Constants.ConstantNames.SEQ_BIN_SKU;
 
 @Entity
-@Table(name="assureBinSku", indexes=@Index(name="bin_sku_index", columnList = "binId, globalSkuId", unique = true))
+@Table(name="assureBinSku", uniqueConstraints=@UniqueConstraint(name="unq_const_bin_sku", columnNames = {"binId", "globalSkuId"}))
 @Getter
 @Setter
 public class BinSkuPojo extends AbstractPojo{

@@ -36,10 +36,12 @@ public class InventoryService {
         updateAvailableQty(ip.getId(),qty);
     }
 
-    public void updateAvailableAndAllocatedQty(Long orderedQty, Long globalSkuId){
-        InventoryPojo inventoryPojo = dao.selectByGlobalSkuId(globalSkuId);
-        inventoryPojo.setAvailableQty(inventoryPojo.getAvailableQty()-Math.min(orderedQty, inventoryPojo.getId()));
-        inventoryPojo.setAllocatedQty(inventoryPojo.getAllocatedQty()+Math.min(orderedQty, inventoryPojo.getId()));
+    public Long updateAvailableAndAllocatedQty(Long orderedQty, Long globalSkuId) throws ApiException {
+        InventoryPojo inventoryPojo = getCheckGlobalSkuId(globalSkuId);
+        Long qtyToAllocate = Math.min(orderedQty, inventoryPojo.getAvailableQty());
+        inventoryPojo.setAvailableQty(inventoryPojo.getAvailableQty()-qtyToAllocate);
+        inventoryPojo.setAllocatedQty(inventoryPojo.getAllocatedQty()+qtyToAllocate);
+        return qtyToAllocate;
     }
 
 

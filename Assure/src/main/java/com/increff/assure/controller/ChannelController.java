@@ -21,26 +21,22 @@ public class ChannelController {
 
     @ApiOperation(value = "Adds a channel")
     @RequestMapping(path = "/channels", method = RequestMethod.POST)
-    public void addChannel(@RequestBody ChannelForm form) throws ApiException {
-        dto.add(form);
+    public ChannelData addChannel(@RequestBody ChannelForm form) throws ApiException {
+        return dto.add(form);
     }
 
     @ApiOperation(value = "Gets a channel")
-    @RequestMapping(path = "/channel/{id}", method = RequestMethod.GET)
+    @RequestMapping(path = "/channels/{id}", method = RequestMethod.GET)
     public ChannelData get(@PathVariable Long id) throws ApiException {
         return dto.getChannel(id);
     }
 
     @ApiOperation(value = "Gets a list of all channels")
-    @RequestMapping(path = "/channel", method = RequestMethod.GET)
-    public List<ChannelData> getAll() throws ApiException {
+    @RequestMapping(path = "/channels", method = RequestMethod.GET)
+    public List<ChannelData> getAll() {
         return dto.getAllChannels();
     }
 
 
-    @ApiOperation(value = "Adds channel-listings")
-    @RequestMapping(path = "/channel-listings", method = RequestMethod.POST)
-    public void addChannelListing(@RequestBody UploadChannelListingForm form) throws ApiException {
-        dto.addChannelListings(form);
-    }
+
 }

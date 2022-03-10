@@ -2,7 +2,6 @@ package com.increff.assure.service;
 
 import com.increff.assure.dao.PartyDao;
 import com.increff.assure.pojo.PartyPojo;
-import com.increff.commons.Constants.Invoice;
 import com.increff.commons.Constants.Party.PartyType;
 import com.increff.commons.Exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,9 @@ public class PartyService extends AbstarctService {
 
     public void add(PartyPojo p){
         PartyPojo exists = dao.selectByNameAndType(p.getPartyName(), p.getPartyType());
-        if(Objects.nonNull(exists)) return;
+        if(Objects.nonNull(exists)) {
+            return;
+        }
         dao.insert(p);
     }
 
@@ -47,11 +48,6 @@ public class PartyService extends AbstarctService {
         return p;
     }
 
-    public PartyPojo getCheckClientByName(String name) throws ApiException {
-        PartyPojo p = dao.selectByNameAndType(name, PartyType.CLIENT);
-        if(Objects.isNull(p))throw new ApiException("Client with name: "+name+" doesn't exist");
-        return p;
-    }
 
 
 
