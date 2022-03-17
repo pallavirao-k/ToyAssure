@@ -16,7 +16,7 @@ public class ProductDao extends GenericDao<ProductPojo> {
 
     private static final String SELECT_BY_CLIENT_SKU_ID_CLIENT_ID = "select p from ProductPojo p where clientSkuId =: clientSkuId AND clientId =: clientId";
     private static final String SELECT_BY_CLIENT_ID_AND_CLIENT_SKU_IDS = "select p from ProductPojo p where clientId =: clientId AND clientSkuId IN (:clientSkuIds)";
-
+    private static final String SELECT_BY_GLOBAL_SKU_IDS = "select p from ProductPojo p where globalSkuId IN (:globalSkuIds)";
 
     public ProductPojo selectByClientSkuIdAndClientId(String clientSkuId, Long clientId){
         ProductPojo p;
@@ -46,6 +46,15 @@ public class ProductDao extends GenericDao<ProductPojo> {
     // add singleOrNull function in Generic Dao.
 
 
+    public List<ProductPojo> selectByGlobalSkuIds(List<Long> globalSkuIds){
+        List<ProductPojo> finalList = new ArrayList<>();
+        for(List<Long> partitionedGlobalSkus: partition(globalSkuIds)){
+            TypedQuery<ProductPojo> q = getQuery(SELECT_BY_GLOBAL_SKU_IDS, ProductPojo.class);
+            q.setParameter("globalSkuIds", globalSkuIds);
+            finalList.addAll(q.getResultList());
+        }
+        return finalList;
+    }
 
 
 

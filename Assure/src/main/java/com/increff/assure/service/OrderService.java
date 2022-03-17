@@ -23,20 +23,15 @@ public class OrderService {
     @Autowired
     private OrderItemDao orderItemDao;
 
-    public OrderPojo createOrderUsingCSV(OrderPojo orderPojo, Map<String, Long> productsMap, Map<String,
-            Long> productQuantitiesMap, List<String> clientSkuIds){
+    public OrderPojo addOrder(OrderPojo orderPojo){
         OrderPojo orderPojoToReturn =  dao.insertAndReturnPojo(orderPojo);
-        addOrderItems(orderPojoToReturn.getId(), productsMap, productQuantitiesMap, clientSkuIds);
         return orderPojoToReturn;
     }
 
-    public OrderPojo addOrderUsingChannelSkuId(OrderPojo orderPojo, Map<String, Long> productsMap,
-                                               Map<String, Long> productQuantitiesMap, List<String> channelSkuIds){
-        orderPojo.setOrderStatus(OrderStatus.CREATED);
-        OrderPojo orderPojoToReturn =  dao.insertAndReturnPojo(orderPojo);
-        addOrderItems(orderPojoToReturn.getId(), productsMap, productQuantitiesMap, channelSkuIds);
-        return orderPojoToReturn;
+    public void insertOrderItem(OrderItemPojo orderItemPojo){
+        orderItemDao.insert(orderItemPojo);
     }
+
 
     public OrderPojo getByChannelIdAndChannelOrderId(Long channelId, String channelOrderId){
         return dao.selectByChannel(channelId, channelOrderId);
@@ -47,20 +42,7 @@ public class OrderService {
         orderPojo.setOrderStatus(OrderStatus.ALLOCATED);
     }
 
-    public void addOrderItems(Long orderId, Map<String, Long> productsMap, Map<String, Long> productQuantitiesMap,
-                              List<String> skuIds){
-        for(String skuId: skuIds){
-            OrderItemPojo orderItemPojo = new OrderItemPojo();
-            orderItemPojo.setGlobalSkuId(productsMap.get(skuId));
-            orderItemPojo.setOrderedQty(productQuantitiesMap.get(skuId));
-            orderItemPojo.setAllocatedQty(0L);//qty integer
-            orderItemPojo.setFulfilledQty(0L);
-            orderItemPojo.setOrderId(orderId);
-            orderItemDao.insert(orderItemPojo);
-        }
-    }
-
-    public List<OrderItemPojo> getAllOrderItemsByOrderId(Long orderId){
+    public List<OrderItemPojo> getItemsByOrderId(Long orderId){
         return orderItemDao.selectByOrderId(orderId);
     }
 
@@ -68,6 +50,14 @@ public class OrderService {
         OrderItemPojo orderItemPojo = orderItemDao.select(id);
         orderItemPojo.setAllocatedQty(orderItemPojo.getAllocatedQty()+qtyToAllocate);
     }
+
+    public void updateFulfilledQty(List<OrderItemPojo> list){
+        for(OrderItemPojo orderItemPojo: list){
+            orderItemPojo.setAllocatedQty(orderItemPojo.getAllocatedQty()-orderItemPojo.getOrderedQty());
+            orderItemPojo.setFulfilledQty(orderItemPojo.getFulfilledQty()+orderItemPojo.getOrderedQty());
+        }
+    }
+
 
     public OrderPojo getCheckOrder(Long id) throws ApiException {
         OrderPojo orderPojo = dao.select(id);

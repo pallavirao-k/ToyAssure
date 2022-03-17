@@ -45,12 +45,15 @@ public class OrderDto extends AbstractDto {
         checkClientIdAndCustomerId(orderWithClientSkuIdForm.getClientId(), orderWithClientSkuIdForm.getCustomerId());
         List<String> clientSkuIds = orderWithClientSkuIdForm.getFormList().stream().
                 map(OrderItemWithClientSkuId::getClientSkuId).collect(Collectors.toList());
-        Map<String, Long> productsMap= getCheckClientSkuId(orderWithClientSkuIdForm.getClientId(), clientSkuIds);
-        Map<String, Long> productQuantitiesMap = orderWithClientSkuIdForm.getFormList().stream().collect(Collectors.
+        Map<String, Long> clientSkuToGlobalSku= getCheckClientSkuId(orderWithClientSkuIdForm.getClientId(), clientSkuIds);
+        Map<String, Long> clientSkuToQty = orderWithClientSkuIdForm.getFormList().stream().collect(Collectors.
                 toMap(value->value.getClientSkuId(), value->value.getQty()));
+        Map<String, Double> clientSkuToPrice = orderWithClientSkuIdForm.getFormList().stream().collect(Collectors.
+                toMap(value->value.getClientSkuId(), value->value.getSellingPricePerUnit()));
 
         OrderPojo orderPojo = convertUploadOrderForm(orderWithClientSkuIdForm);
-        OrderPojo p = service.createOrderUsingCSV(orderPojo, productsMap, productQuantitiesMap, clientSkuIds);
+        OrderPojo p = service.addOrder(orderPojo);
+        addOrderItems(p.getId(), clientSkuToGlobalSku, clientSkuToQty, clientSkuToPrice);
         return convert(p, OrderData.class);
     }
 
@@ -59,12 +62,16 @@ public class OrderDto extends AbstractDto {
         checkClientIdAndCustomerId(form.getClientId(), form.getCustomerId());
         List<String> channelSkuIds = form.getOrderItemWithChannelSkuIdList().stream()
                 .map(OrderItemWithChannelSkuId::getChannelSkuId).collect(Collectors.toList());
-        Map<String, Long> productsMap = getCheckChannelSkuId(form.getClientId(),form.getChannelId(), channelSkuIds);
-        Map<String, Long> productQuantitiesMap = form.getOrderItemWithChannelSkuIdList().stream().collect(Collectors.
+        Map<String, Long> channelSkuToGlobalSku = getCheckChannelSkuId(form.getClientId(),form.getChannelId(), channelSkuIds);
+        Map<String, Long> channelSkuToQty = form.getOrderItemWithChannelSkuIdList().stream().collect(Collectors.
                 toMap(value->value.getChannelSkuId(), value->value.getQty()));
+        Map<String, Double> channelSkuToPrice = form.getOrderItemWithChannelSkuIdList().stream().collect(Collectors.
+                toMap(value->value.getChannelSkuId(), value->value.getSellingPricePerUnit()));
 
         OrderPojo orderPojo = convert(form, OrderPojo.class);
-        OrderPojo p = service.addOrderUsingChannelSkuId(orderPojo, productsMap, productQuantitiesMap, channelSkuIds);
+        orderPojo.setOrderStatus(OrderStatus.CREATED);
+        OrderPojo p = service.addOrder(orderPojo);
+        addOrderItems(p.getId(), channelSkuToGlobalSku, channelSkuToQty, channelSkuToPrice);
         return convert(p, OrderData.class);
     }
 
@@ -72,8 +79,10 @@ public class OrderDto extends AbstractDto {
     @Transactional(rollbackOn = ApiException.class)
     public void allocateOrder(Long id) throws ApiException {
         OrderPojo orderPojo = service.getCheckOrder(id);
-        if(orderPojo.getOrderStatus().equals(OrderStatus.CREATED)) {
-            List<OrderItemPojo> orderItemPojoList = service.getAllOrderItemsByOrderId(id);
+        if(!orderPojo.getOrderStatus().equals(OrderStatus.CREATED)){
+            throw new ApiException("Order already allocated");
+        }
+            List<OrderItemPojo> orderItemPojoList = service.getItemsByOrderId(id);
             for (OrderItemPojo orderItemPojo : orderItemPojoList) {
                 Long qtyToAllocate = inventoryService.updateAvailableAndAllocatedQty(
                         orderItemPojo.getOrderedQty() - orderItemPojo.getAllocatedQty(),
@@ -83,12 +92,12 @@ public class OrderDto extends AbstractDto {
                 binService.updateBinSkuQty(inventoryPojo.getAllocatedQty(), orderItemPojo.getGlobalSkuId());
             }
             checkAndAllocateOrder(id);
-        }
+
 
     }
 
     public void checkAndAllocateOrder(Long id){
-        List<OrderItemPojo> orderItemPojoList = service.getAllOrderItemsByOrderId(id);
+        List<OrderItemPojo> orderItemPojoList = service.getItemsByOrderId(id);
         for(OrderItemPojo orderItemPojo:orderItemPojoList){
             if(orderItemPojo.getOrderedQty()!=orderItemPojo.getAllocatedQty()){
                 return;
@@ -169,6 +178,20 @@ public class OrderDto extends AbstractDto {
         if(Objects.nonNull(orderPojo)){
             throw  new ApiException("Order already exists with channel ID: "+channelId+" and channel Order ID: "
                     +channelOrderId);
+        }
+    }
+
+    private void addOrderItems(Long orderId, Map<String, Long> productsMap, Map<String, Long> productQuantitiesMap,
+                               Map<String, Double> sellingPrice){
+        for(String skuId: productsMap.keySet()){
+            OrderItemPojo orderItemPojo = new OrderItemPojo();
+            orderItemPojo.setGlobalSkuId(productsMap.get(skuId));
+            orderItemPojo.setOrderedQty(productQuantitiesMap.get(skuId));
+            orderItemPojo.setAllocatedQty(0L);//qty integer
+            orderItemPojo.setFulfilledQty(0L);
+            orderItemPojo.setOrderId(orderId);
+            orderItemPojo.setSellingPricePerUnit(sellingPrice.get(skuId));
+            service.insertOrderItem(orderItemPojo);
         }
     }
 

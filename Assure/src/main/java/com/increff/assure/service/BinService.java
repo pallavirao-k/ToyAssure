@@ -49,16 +49,21 @@ public class BinService extends AbstarctService{
     }
 
 
-    public void updateBinSkuQty(Long allocatedQty, Long globalSkuId){
+    public void updateBinSkuQty(Long qtyToReduce, Long globalSkuId){
+        if(qtyToReduce<=0){
+            return;
+        }
         List<BinSkuPojo> binSkuPojoList = binSkuDao.selectByGlobalSkuId(globalSkuId);
         for(BinSkuPojo binSkuPojo:binSkuPojoList){
-            Long qtyToPut = Math.min(allocatedQty, binSkuPojo.getQty());
-            binSkuPojo.setQty(binSkuPojo.getQty()-qtyToPut);
-            allocatedQty = allocatedQty-qtyToPut;
-            if(allocatedQty==0){
+            if(qtyToReduce==0){
                 break;
             }
+            Long qtyToPut = Math.min(qtyToReduce, binSkuPojo.getQty());
+            binSkuPojo.setQty(binSkuPojo.getQty()-qtyToPut);
+            qtyToReduce = qtyToReduce-qtyToPut;
+
         }
+
     }
 
     public BinSkuPojo get(Long binId, Long globalSkuId){

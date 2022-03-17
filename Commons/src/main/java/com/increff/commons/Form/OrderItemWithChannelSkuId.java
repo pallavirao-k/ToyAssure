@@ -17,4 +17,7 @@ public class OrderItemWithChannelSkuId {
     @Min(value=1L)
     @Max(value = 5000L)
     private Long qty;
+    @NotNull
+    @Min(value = 1)
+    private Double sellingPricePerUnit;
 }

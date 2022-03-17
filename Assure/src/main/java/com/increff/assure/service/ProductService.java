@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -63,6 +65,10 @@ public class ProductService extends AbstarctService{
         return dao.selectByClientIdAndClientSkuIds(clientId,clientSkuIds); // partitioning and check for empty list
     }
 
+    public Map<Long, ProductPojo> getByGlobalSkuIds(List<Long> globalSkuIds){
+        return dao.selectByGlobalSkuIds(globalSkuIds).stream().collect(Collectors.
+                toMap(value ->value.getGlobalSkuId(), value->value));
+    }
 
 
 

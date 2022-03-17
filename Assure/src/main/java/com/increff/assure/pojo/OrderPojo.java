@@ -32,4 +32,5 @@ public class OrderPojo extends AbstractPojo{
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
+
 }

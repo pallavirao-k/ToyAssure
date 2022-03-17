@@ -19,15 +19,15 @@ public class OrderController {
     private OrderDto dto;
 
     @ApiOperation(value = "uploads order")
-    @RequestMapping(path = "/client-sku-ids", method= RequestMethod.POST)
+    @RequestMapping(path = "/upload", method= RequestMethod.POST)
     public OrderData addOrderUsingClientSkuIds(@RequestBody OrderWithClientSkuIdForm orderWithClientSkuIdForm) throws ApiException {
-
-       return dto.addOrderUsingClientSkuIds(orderWithClientSkuIdForm);
+        return dto.addOrderUsingClientSkuIds(orderWithClientSkuIdForm);
     }
 
     @ApiOperation(value = "add order by Channel Api")
-    @RequestMapping(path = "/channel-sku-ids", method= RequestMethod.POST)
+    @RequestMapping(path = "", method= RequestMethod.POST)
     public OrderData addOrderUsingChannelSkuIds(@RequestBody OrderWithChannelSkuIdForm form) throws ApiException {
+        System.out.println("Hello");
         return dto.addOrderUsingChannelSkuIds(form);
     }
 
@@ -36,6 +36,7 @@ public class OrderController {
     public void allocateOrder(@RequestParam Long id) throws ApiException {
         dto.allocateOrder(id);
     }
+
 
 
 
