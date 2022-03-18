@@ -27,7 +27,7 @@ public class XmlUtil {
 
 
     //Generate PDF
-    public static byte[] generatePDF(Long orderId, File xml_file, StreamSource xsl_source) throws Exception {
+    public static String generatePDF(Long orderId, File xml_file, StreamSource xsl_source) throws Exception {
 
         String path = PDF_BASE_ADDRESS+orderId+"pdf";
         File pdfFile = new File(path);
@@ -55,7 +55,7 @@ public class XmlUtil {
         out.close();
         out.flush();
 
-        return bytes;
+        return path;
 
     }
 

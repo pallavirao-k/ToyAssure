@@ -2,6 +2,7 @@ package com.increff.assure.controller;
 
 import com.increff.assure.dto.InvoiceDto;
 import com.increff.assure.dto.OrderDto;
+import com.increff.commons.Data.InvoiceResponse;
 import com.increff.commons.Data.OrderData;
 import com.increff.commons.Exception.ApiException;
 import com.increff.commons.Form.OrderWithClientSkuIdForm;
@@ -20,8 +21,8 @@ public class InvoiceController {
 
     @ApiOperation(value = "uploads order")
     @RequestMapping(path = "", method= RequestMethod.GET)
-    public void generateInvoice(@RequestParam Long orderId) throws Exception {
-        dto.generateInvoice(orderId);
+    public InvoiceResponse generateInvoice(@RequestParam Long orderId) throws Exception {
+        return dto.generateInvoice(orderId);
     }
 
 }

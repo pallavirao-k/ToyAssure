@@ -1,27 +1,24 @@
 package com.increff.assure.util;
 
+import com.increff.assure.pojo.InvoicePojo;
 import com.increff.assure.pojo.OrderItemPojo;
 import com.increff.assure.pojo.ProductPojo;
 import com.increff.commons.Data.InvoiceData;
 import com.increff.commons.Data.InvoiceProductData;
+import com.increff.commons.Data.InvoiceResponse;
 import com.increff.commons.Util.XmlUtil;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.http.ResponseEntity;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static com.increff.commons.Constants.ConstantNames.*;
 import static com.increff.commons.Util.ConvertUtil.convert;
+import static com.increff.commons.Util.RestTemplateUtil.postRequest;
 
 public class InvoiceUtil {
 
@@ -47,27 +44,43 @@ public class InvoiceUtil {
         return invoiceData;
     }
 
-    public static byte[] generatePdf(InvoiceData invoiceData) throws Exception {
+    public static InvoicePojo convertToInvoicePojo(Long orderId, String invoiceUrl){
+        InvoicePojo invoicePojo = new InvoicePojo();
+        invoicePojo.setOrderId(orderId);
+        invoicePojo.setInvoiceUrl(invoiceUrl);
+        return invoicePojo;
+    }
+
+    public static InvoiceResponse convertToInvoiceResponse(InvoicePojo invoicePojo){
+        InvoiceResponse invoiceResponse = new InvoiceResponse();
+        invoiceResponse.setId(invoicePojo.getId());
+        invoiceResponse.setOrderId(invoicePojo.getOrderId());
+        invoiceResponse.setInvoiceUrl(invoicePojo.getInvoiceUrl());
+        return  invoiceResponse;
+    }
+
+    public static String generatePdf(InvoiceData invoiceData) throws Exception {
         XmlUtil.generateXml(new File(INVOICE_XML_PATH),
                 invoiceData, InvoiceData.class);
         return XmlUtil.generatePDF(invoiceData.getOrderId(), new File(INVOICE_XML_PATH),
                 new StreamSource(INVOICE_XSL_PATH));
+
     }
 
-    public static void getInvoice(Long orderId) throws IOException {
-        String path = PDF_BASE_ADDRESS+orderId+"pdf";
-        Path pdfPath = Paths.get(path);
-        byte[] bytes = Files.readAllBytes(pdfPath);
-        createPdfResponse(bytes);
+    public static ResponseEntity<String> generateInvoiceInChannelApp(InvoiceData invoiceData){
+        return postRequest("", invoiceData);
     }
 
 
-    public static void createPdfResponse(byte[] bytes) throws IOException {
-        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-        HttpServletResponse response = ((ServletRequestAttributes)requestAttributes).getResponse();
-        response.setContentType("application/pdf");
-        response.setContentLength(bytes.length);
-        response.getOutputStream().write(bytes);
-        response.getOutputStream().flush();
-    }
+//
+//// return Invoice response class
+////
+//    public static void createPdfResponse(byte[] bytes) throws IOException {
+//        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+//        HttpServletResponse response = ((ServletRequestAttributes)requestAttributes).getResponse();
+//        response.setContentType("application/pdf");
+//        response.setContentLength(bytes.length);
+//        response.getOutputStream().write(bytes);
+//        response.getOutputStream().flush();
+//    }
 }

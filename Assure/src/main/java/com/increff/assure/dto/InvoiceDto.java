@@ -1,16 +1,11 @@
 package com.increff.assure.dto;
 
-import com.increff.assure.pojo.ChannelPojo;
-import com.increff.assure.pojo.OrderItemPojo;
-import com.increff.assure.pojo.OrderPojo;
-import com.increff.assure.pojo.ProductPojo;
-import com.increff.assure.service.ChannelService;
-import com.increff.assure.service.InventoryService;
-import com.increff.assure.service.OrderService;
-import com.increff.assure.service.ProductService;
+import com.increff.assure.pojo.*;
+import com.increff.assure.service.*;
 import com.increff.commons.Constants.Invoice;
 import com.increff.commons.Constants.OrderStatus;
 import com.increff.commons.Data.InvoiceData;
+import com.increff.commons.Data.InvoiceResponse;
 import com.increff.commons.Exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,36 +30,45 @@ public class InvoiceDto {
     private InventoryService inventoryService;
     @Autowired
     private ChannelService channelService;
+    @Autowired
+    private InvoiceService service;
 
 
     //TODO change it based on invoice type
     @Transactional(rollbackOn = ApiException.class)
-    public void generateInvoice(Long orderId) throws Exception {
+    public InvoiceResponse generateInvoice(Long orderId) throws Exception {
         OrderPojo orderPojo = orderService.getCheckOrder(orderId);
         ChannelPojo channelPojo = channelService.getCheckChannelById(orderPojo.getChannelId());
 
         if (orderPojo.getOrderStatus().equals(OrderStatus.CREATED)) {
-            return;
-        } else if (orderPojo.getOrderStatus().equals(OrderStatus.FULFILLED)) {
-            getInvoice(orderId);
-        } else {
-            if (channelPojo.getInvoiceType().equals(Invoice.InvoiceType.SELF)) {
-
-                List<OrderItemPojo> pojos = orderService.getItemsByOrderId(orderId);
-                inventoryService.updateFulfilledQty(pojos);
-                orderService.updateFulfilledQty(pojos);
-                List<OrderItemPojo> list = orderService.getItemsByOrderId(orderId);
-                List<Long> globalSkuIds = list.stream().
-                        map(OrderItemPojo::getGlobalSkuId).collect(Collectors.toList());
-                Map<Long, ProductPojo> globalSkuToProduct = productService.getByGlobalSkuIds(globalSkuIds);
-
-                InvoiceData invoiceData = convertToInvoiceData(list, globalSkuToProduct);
-                generatePdf(invoiceData);
-            }
-            else{
-
-            }
+            throw new ApiException("Order is not allocated");
         }
+        if (orderPojo.getOrderStatus().equals(OrderStatus.FULFILLED)) {
+            return convertToInvoiceResponse(service.getcheckByOrderId(orderId));
+        }
+        if (channelPojo.getInvoiceType().equals(Invoice.InvoiceType.SELF)) {
+                String invoiceUrl = generatePdf(getInvoiceData(orderId));
+                InvoicePojo invoicePojo = convertToInvoicePojo(orderId, invoiceUrl);
+                return convertToInvoiceResponse(service.add(invoicePojo));
+        }
+        //return generateInvoiceInChannelApp(getInvoiceData(orderId));
+        return null;
+        }
+
+        @Transactional(rollbackOn = ApiException.class)
+        private InvoiceData getInvoiceData(Long orderId) throws Exception {
+            List<OrderItemPojo> pojos = orderService.getItemsByOrderId(orderId);
+            Map<Long, Long> globalSkuIdsToQty = pojos.stream().collect(Collectors.
+                    toMap(val->val.getGlobalSkuId(), val->val.getOrderedQty()));
+            inventoryService.updateFulfilledQty(globalSkuIdsToQty);
+            orderService.updateFulfilledQty(orderId);
+            List<Long> globalSkuIds = pojos.stream().
+                    map(OrderItemPojo::getGlobalSkuId).collect(Collectors.toList());
+            Map<Long, ProductPojo> globalSkuToProduct = productService.getByGlobalSkuIds(globalSkuIds);
+            return convertToInvoiceData(pojos, globalSkuToProduct);
+        }
+
+
 
 
     }
@@ -73,4 +77,4 @@ public class InvoiceDto {
 
 
 
-}
+

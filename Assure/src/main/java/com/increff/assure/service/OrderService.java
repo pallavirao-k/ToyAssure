@@ -51,7 +51,8 @@ public class OrderService {
         orderItemPojo.setAllocatedQty(orderItemPojo.getAllocatedQty()+qtyToAllocate);
     }
 
-    public void updateFulfilledQty(List<OrderItemPojo> list){
+    public void updateFulfilledQty(Long orderId){
+        List<OrderItemPojo> list = orderItemDao.selectByOrderId(orderId);
         for(OrderItemPojo orderItemPojo: list){
             orderItemPojo.setAllocatedQty(orderItemPojo.getAllocatedQty()-orderItemPojo.getOrderedQty());
             orderItemPojo.setFulfilledQty(orderItemPojo.getFulfilledQty()+orderItemPojo.getOrderedQty());

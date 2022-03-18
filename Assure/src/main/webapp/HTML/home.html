@@ -11,29 +11,24 @@
 
 
     <div class="toast align-items-center text-white border-0"
-         style="position: absolute; background-color: red; top: 10px; right: 10px;"
+         style="position: fixed; background-color: rgb(196, 0, 0); z-index: 1056; top: 10px; right: 10px;"
          role="alert" aria-live="assertive" aria-atomic="true" id="EpicToast"></div>
     <div class="toast align-items-center text-white border-0"
-         style="position: absolute; background-color: green; top: 10px; right: 10px;"
+         style="position: fixed; background-color: rgb(0, 128, 0); z-index: 1056; top: 10px; right: 10px;"
          role="alert" aria-live="assertive" aria-atomic="true" id="EpicToast1"></div>
 
 </header>
 
 
-<div class="container-fluid">
-    <div class="split left bg-white">
-        <div class="b">
-            <img th:src="@{/pictures/party.png}" height="120px" width="100px"
-                 style="position: absolute; top: 30%; left: 43%;">
-            <button type="button" class="btn btn-sm btn-outline-primary mr-2"
-                    style="position: relative; top: 55%; left: 32%;" data-toggle="modal"
-                    data-target="#brand-modal">Add</button>
-            <button type="button" class="btn btn-sm btn-outline-primary mr-2"
-                    id="upload-data" style="position: relative; top: 55%; left: 33%;">
-                Upload
-            </button>
-            <button type="button" class="btn btn-sm btn-outline-dark"
-                    id="refresh-data" style="position: relative; top: 55%; left: 34%;">Refresh</button>
+<div class="container-fluid px-5 mt-5 pt-3">
+    <div>
+        <h2 class="my-3">Brand Master</h2>
+        <div>
+            <button type="button" class="btn btn-sm btn-outline-primary mx-1"
+                    data-toggle="modal" data-target="#upload-employee-modal">
+                Upload</button>
+            <button type="button" class="btn btn-sm btn-outline-dark mx-1"
+                    onclick="location.reload()">Refresh</button>
         </div>
     </div>
     <!-- left side ends -->
@@ -41,64 +36,54 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Party</h5>
+                    <h5 class="modal-title">Add Brand</h5>
                 </div>
                 <div class="modal-body">
                     <form class="form-inline" id="employee-form">
                         <div class="form-group">
-                            <label for="inputBrand" class="col-sm-2 col-form-label">Name</label>
+                            <label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
                             <div class="col">
-                                <input type="text" class="form-control" name="partName"
-                                       id="inputBrand" placeholder="Enter name" />
+                                <input type="text" class="form-control" name="brand"
+                                       id="inputBrand" placeholder="Enter Brand" />
                             </div>
                         </div>
                         <div class="form-group ">
-                            <label for="inputCategory" class="col-sm-2 col-form-label">Type</label>
+                            <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
                             <div class="col">
-                                <input type="text" class="form-control" name="partyType"
-                                       id="inputCategory" placeholder="Enter party type" />
+                                <input type="text" class="form-control" name="category"
+                                       id="inputCategory" placeholder="Enter Category" />
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class=" close btn btn-outline-secondary"
-                            data-dismiss="modal" id="c">Cancel</button>
+                            data-dismiss="modal" id="resetModal">Cancel</button>
                     <button type="button" class="btn btn-outline-primary"
                             id="add-brand">Add</button>
                 </div>
             </div>
         </div>
     </div>
-
     <!-- Blank Row -->
-    <div class="row">&nbsp;</div>
-    <div class="split right bg-white">
-        <div class="row">
-            <div class="col-12 table-responsive">
-                <table class="table table-striped" id="employee-table">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Actions</th>
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table class="table table-striped" id="employee-table">
+                <thead>
+                <tr>
+                    <th scope="col">S.No.</th>
+                    <th scope="col">Brand</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Action</th>
 
-                    </tr>
-                    </thead>
-                    <tbody>
+                </tr>
+                </thead>
+                <tbody>
 
-                    </tbody>
-                </table>
-
-
-            </div>
+                </tbody>
+            </table>
         </div>
-
     </div>
-
-
-
     <!--Edit Modal -->
     <div class="modal" tabindex="-1" role="dialog"
          id="edit-employee-modal">
@@ -106,19 +91,26 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Party</h5>
+                    <h5 class="modal-title">Edit Brand</h5>
                 </div>
 
                 <div class="modal-body">
                     <form class="form-inline" id="employee-edit-form">
                         <div class="form-group">
-                            <label for="inputBrand" class="col-sm-2 col-form-label">Name</label>
+                            <label for="inputBrand" class="col-sm-2 col-form-label">Brand</label>
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" name="partyName"
-                                       placeholder="Enter party name">
+                                <input type="text" class="form-control" name="brand"
+                                       placeholder="Enter Brand">
                             </div>
                         </div>
-                        <input type="hidden" name="partyId">
+                        <div class="form-group">
+                            <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="category"
+                                       placeholder="Enter Category">
+                            </div>
+                        </div>
+                        <input type="hidden" name="id">
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -132,18 +124,13 @@
     </div>
 
 
-
-
-
-
-    <!-- Employee Edit Modal -->
     <div class="modal" tabindex="-1" role="dialog"
          id="upload-employee-modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Upload Brands</h5>
+                    <h5 class="modal-title">Upload Parties</h5>
                 </div>
 
                 <div class="modal-body">
@@ -157,9 +144,9 @@
 
 
 
-                    <a th:href="@{/sample/brand2.tsv}" target="_blank">Download
+                    <a th:href="@{/sample/brand_sample.tsv}" target="_blank">Download
                         Sample</a>
-                    <div id="row-box" style="display:none;">
+                    <div id="row-box" style="display: none;">
                         <br> Rows: <span id="rowCount">0</span>, Processed: <span
                             id="processCount">0</span>, Errors: <span id="errorCount">0</span>
                     </div>
@@ -167,38 +154,65 @@
 
                 <div class="modal-footer">
 
-                    <button type="button" class="btn btn-sm btn-outline-warning mr-2" id="download-errors" style="display:none;">
-                        Download Errors
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary mr-2"
-                            data-dismiss="modal" id="cc">Cancel</button>
-                    <button type="button" class="btn btn-sm btn-outline-primary mr-2" id="process-data">Upload</button>
+                    <button type="button" class="btn btn-sm btn-outline-warning mr-2"
+                            id="download-errors" style="display: none;">Download
+                        Errors</button>
+                    <button type="button"
+                            class="btn btn-sm btn-outline-secondary mr-2"
+                            data-dismiss="modal" id="resetBox">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary mr-2"
+                            id="process-data">Upload</button>
 
                 </div>
             </div>
         </div>
     </div>
 
-
-
-
-
-
-
-
-
 </div>
 <!-- Container end -->
-<footer class="footer">
+<footer class="footer bg-light">
+    Copyright Increff 2022
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script
             src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script th:src="@{/static/home.js}"></script>
 
+    <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
+    <!--  <script th:src="@{static/js/jquery.min.js}"></script>-->
+
+    <script>
+
+
+const CSVToJSON = csv => {
+        const lines = csv.split('\n');
+        const keys = lines[0].split(',');
+        return lines.slice(1).map(line => {
+            return line.split(',').reduce((acc, cur, i) => {
+                const toAdd = {};
+                toAdd[keys[i]] = cur;
+                return { ...acc, ...toAdd };
+            }, {});
+        });
+    };
+
+function logCSV(){
+    csv = document.getElementById("employeeFile").value;
+    console.log(CSVToJSON(csv));
+}
+
+
+function init() {
+    console.log("helloooooooo");
+	$('#process-data').click(logCSV);
+
+}
+
+$(document).ready(init);
+
+    </script>
 
 
 </footer>
 
 </body>
 </html>
-

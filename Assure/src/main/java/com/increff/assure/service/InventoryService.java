@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -50,11 +51,11 @@ public class InventoryService {
         return qtyToAllocate;
     }
 
-    public void updateFulfilledQty(List<OrderItemPojo> list) throws ApiException {
-        for(OrderItemPojo pojo: list){
-            InventoryPojo inventoryPojo = getCheckGlobalSkuId(pojo.getGlobalSkuId());// avoid single checks
-            inventoryPojo.setAllocatedQty(inventoryPojo.getAllocatedQty()-pojo.getOrderedQty());
-            inventoryPojo.setFulfilledQty(inventoryPojo.getFulfilledQty()+pojo.getOrderedQty());
+    public void updateFulfilledQty(Map<Long, Long> globalSkuIdToQty) throws ApiException {
+        for(Long globalSkuId : globalSkuIdToQty.keySet()){
+            InventoryPojo inventoryPojo = getCheckGlobalSkuId(globalSkuId);// avoid single checks
+            inventoryPojo.setAllocatedQty(inventoryPojo.getAllocatedQty()-globalSkuIdToQty.get(globalSkuId));
+            inventoryPojo.setFulfilledQty(inventoryPojo.getFulfilledQty()+globalSkuIdToQty.get(globalSkuId));
         }
     }
 

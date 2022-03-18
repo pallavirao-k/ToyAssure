@@ -4,6 +4,8 @@ import com.increff.channelapp.dto.ChannelAppDto;
 import com.increff.commons.Data.OrderData;
 import com.increff.commons.Exception.ApiException;
 import com.increff.commons.Form.OrderWithChannelSkuIdForm;
+import com.increff.commons.Form.OrderWithClientSkuIdForm;
+import com.increff.commons.Form.PartyForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,7 @@ public class ChannelAppController {
 
     @ApiOperation(value = "add order by Channel Api")
     @RequestMapping(path = "", method= RequestMethod.POST)
-    public void addOrder(@RequestBody OrderWithChannelSkuIdForm form) throws IOException {
+    public void addOrder(@RequestBody OrderWithClientSkuIdForm form) throws IOException, ApiException {
         dto.addOrder(form);
     }
 

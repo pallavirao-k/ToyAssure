@@ -1,48 +1,26 @@
 package com.increff.channelapp.dto;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+//
+//import com.increff.channelapp.spring.RestTemplateUrls;
+import com.increff.commons.Exception.ApiException;
 import com.increff.commons.Form.OrderWithChannelSkuIdForm;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import com.increff.commons.Form.OrderWithClientSkuIdForm;
+import com.increff.commons.Form.PartyForm;
+import com.increff.commons.Util.RestTemplateUtil.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpServerErrorException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import static com.increff.commons.Util.RestTemplateUtil.postRequest;
 
 @Service
 public class ChannelAppDto {
 
 
-    public void addOrder(OrderWithChannelSkuIdForm form) throws IOException {
-
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String json = ow.writeValueAsString(form);
-
-        System.out.println(json);
-
-        URL url = new URL("http://localhost:9090/Assure/api/orders");
-        HttpURLConnection con = (HttpURLConnection)url.openConnection();
-        con.setRequestMethod("POST");
-        con.setRequestProperty("Content-Type", "application/json; utf-8");
-        con.setRequestProperty("Accept", "application/json");
-        con.setDoOutput(true);
-        try(OutputStream os = con.getOutputStream()) {
-            byte[] input = json.getBytes("utf-8");
-            os.write(input, 0, input.length);
-        }
-
+    public void addOrder(OrderWithClientSkuIdForm form) throws ApiException {
+            postRequest("http://localhost:9090/Assure/api/orders/upload", form);
 
     }
+
+
+
 }

@@ -60,6 +60,7 @@ public class ChannelListingDto extends AbstractDto {
             cp.setChannelId(uploadChannelListingForm.getChannelId());
             cp.setGlobalSkuId(getProduct(uploadChannelListingForm.getClientId(), form.getClientSkuId())
                     .getGlobalSkuId());
+            channelListingPojoList.add(cp);
         }
         return channelListingPojoList;
     }

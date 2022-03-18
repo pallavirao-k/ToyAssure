@@ -27,7 +27,6 @@ public class OrderController {
     @ApiOperation(value = "add order by Channel Api")
     @RequestMapping(path = "", method= RequestMethod.POST)
     public OrderData addOrderUsingChannelSkuIds(@RequestBody OrderWithChannelSkuIdForm form) throws ApiException {
-        System.out.println("Hello");
         return dto.addOrderUsingChannelSkuIds(form);
     }
 

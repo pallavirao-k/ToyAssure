@@ -3,6 +3,7 @@ package com.increff.assure.dao;
 import com.increff.assure.pojo.ChannelListingPojo;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class ChannelListingDao extends GenericDao<ChannelListingPojo> {
 
 
     private static String SELECT_BY_CLIENT_ID_CHANNEL_ID_CHANNEL_SKU_ID = "select p from ChannelListingPojo p where clientId=:clientId AND channelId=:channelId AND channelSkuId IN (:channelSkuIds)";
+    private static String SELECT_BY_CLIENT_ID_CHANNEL_ID_CHANNEL_SKU_IDD = "select p from ChannelListingPojo p where clientId=:clientId AND channelId=:channelId AND channelSkuId =: channelSkuId";
 
 
     public List<ChannelListingPojo> selectByClientIdChannelIdChannelSkuId(Long clientId, Long channelId, List<String> channelSkuIds) {
@@ -24,6 +26,20 @@ public class ChannelListingDao extends GenericDao<ChannelListingPojo> {
             channelListingPojoList.addAll(q.getResultList());
         }
         return channelListingPojoList;
+    }
+
+    public ChannelListingPojo selectByClientIdChannelIdChannelSkuIdd(Long clientId, Long channelId, String channelSkuId) {
+            ChannelListingPojo pojo;
+            try {
+                TypedQuery<ChannelListingPojo> q = getQuery(SELECT_BY_CLIENT_ID_CHANNEL_ID_CHANNEL_SKU_IDD, ChannelListingPojo.class);
+                q.setParameter("clientId", clientId);
+                q.setParameter("channelId", channelId);
+                q.setParameter("channelSkuId", channelSkuId);
+                pojo = q.getSingleResult();
+            }catch (NoResultException e){
+                pojo = null;
+            }
+        return pojo;
     }
 
 }
