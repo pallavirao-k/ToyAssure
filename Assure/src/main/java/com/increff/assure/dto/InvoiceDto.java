@@ -9,19 +9,22 @@ import com.increff.commons.Data.InvoiceResponse;
 import com.increff.commons.Exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.increff.assure.util.InvoiceUtil.*;
 import static com.increff.commons.Util.ConvertUtil.convert;
+import static com.increff.commons.Util.XmlUtil.generatePdf;
 
 @Service
 public class InvoiceDto {
 
+    @Autowired
+    private RestTemplate restTemplate;
     @Autowired
     private OrderService orderService;
     @Autowired
@@ -47,12 +50,13 @@ public class InvoiceDto {
             return convertToInvoiceResponse(service.getcheckByOrderId(orderId));
         }
         if (channelPojo.getInvoiceType().equals(Invoice.InvoiceType.SELF)) {
+            System.out.println("internallllll");
                 String invoiceUrl = generatePdf(getInvoiceData(orderId));
                 InvoicePojo invoicePojo = convertToInvoicePojo(orderId, invoiceUrl);
                 return convertToInvoiceResponse(service.add(invoicePojo));
         }
-        //return generateInvoiceInChannelApp(getInvoiceData(orderId));
-        return null;
+        return generateInvoiceInChannelApp(getInvoiceData(orderId));
+
         }
 
         @Transactional(rollbackOn = ApiException.class)
@@ -60,13 +64,23 @@ public class InvoiceDto {
             List<OrderItemPojo> pojos = orderService.getItemsByOrderId(orderId);
             Map<Long, Long> globalSkuIdsToQty = pojos.stream().collect(Collectors.
                     toMap(val->val.getGlobalSkuId(), val->val.getOrderedQty()));
+
             inventoryService.updateFulfilledQty(globalSkuIdsToQty);
             orderService.updateFulfilledQty(orderId);
+
             List<Long> globalSkuIds = pojos.stream().
                     map(OrderItemPojo::getGlobalSkuId).collect(Collectors.toList());
             Map<Long, ProductPojo> globalSkuToProduct = productService.getByGlobalSkuIds(globalSkuIds);
             return convertToInvoiceData(pojos, globalSkuToProduct);
         }
+
+    public InvoiceResponse generateInvoiceInChannelApp(InvoiceData invoiceData){
+        System.out.println("channel-app");
+        String url = restTemplate.postForObject("http://localhost:9000/Channel-App/api/orders/invoice",
+                invoiceData, String.class);
+        InvoicePojo invoicePojo = convertToInvoicePojo(invoiceData.getOrderId(), url);
+        return convertToInvoiceResponse(service.add(invoicePojo));
+    }
 
 
 

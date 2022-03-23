@@ -6,13 +6,14 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 @MappedSuperclass
 public class AbstractPojo {
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt = new Date();
+    private ZonedDateTime createdAt = ZonedDateTime.now();
 
     @NotNull
     @Temporal(TemporalType.TIMESTAMP)

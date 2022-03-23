@@ -3,12 +3,16 @@ package com.increff.assure.controller;
 import com.increff.assure.dto.OrderDto;
 import com.increff.commons.Data.OrderData;
 import com.increff.commons.Exception.ApiException;
+import com.increff.commons.Form.OrderSearchForm;
 import com.increff.commons.Form.OrderWithChannelSkuIdForm;
 import com.increff.commons.Form.OrderWithClientSkuIdForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
+import java.util.List;
 
 @Api
 @RestController
@@ -35,6 +39,20 @@ public class OrderController {
     public void allocateOrder(@RequestParam Long id) throws ApiException {
         dto.allocateOrder(id);
     }
+
+    @ApiOperation(value = "search order by Order ID")
+    @RequestMapping(path = "/search/{orderId}", method= RequestMethod.GET)
+    public OrderData searchByOrderId(@PathVariable Long orderId) throws ApiException {
+        return dto.searchByOrderId(orderId);
+    }
+
+    @ApiOperation(value = "search order by Order ID")
+    @RequestMapping(path = "/search", method= RequestMethod.POST)
+    public List<OrderData> searchOrder(@RequestBody OrderSearchForm orderSearchForm) throws ApiException {
+        return dto.searchOrder(orderSearchForm);
+    }
+
+
 
 
 

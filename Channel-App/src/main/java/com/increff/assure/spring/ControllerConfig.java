@@ -1,13 +1,11 @@
-package com.increff.channelapp.spring;
+package com.increff.assure.spring;
 
-import lombok.var;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.thymeleaf.spring4.SpringTemplateEngine;
@@ -23,9 +21,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SuppressWarnings("deprecation")
 @Configuration
+@EnableWebMvc
 @EnableSwagger2
 public class ControllerConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware{
-	public static final String PACKAGE_CONTROLLER = "com.increff.channelapp.controller";
+	public static final String PACKAGE_CONTROLLER = "com.increff.assure.controller";
 	
 
 	private ApplicationContext applicationContext;

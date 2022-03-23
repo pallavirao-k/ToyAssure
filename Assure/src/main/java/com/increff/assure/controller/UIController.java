@@ -8,9 +8,19 @@ import org.springframework.web.servlet.ModelAndView;
 public class UIController {
 
 
-    @RequestMapping(value = "/ui/home")
-    public ModelAndView home() {
-        return mav("home.html");
+    @RequestMapping(value = "/ui/clients")
+    public ModelAndView client() {
+        return mav("client.html");
+    }
+
+    @RequestMapping(value = "/ui/customers")
+    public ModelAndView customer() {
+        return mav("customer.html");
+    }
+
+    @RequestMapping(value = "/ui/products")
+    public ModelAndView product() {
+        return mav("product.html");
     }
 
     protected ModelAndView mav(String page) {

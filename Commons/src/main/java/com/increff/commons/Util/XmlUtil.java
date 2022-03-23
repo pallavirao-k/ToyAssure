@@ -17,19 +17,29 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
+import com.increff.commons.Data.InvoiceData;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
 
-import static com.increff.commons.Constants.ConstantNames.PDF_BASE_ADDRESS;
+import static com.increff.commons.Constants.ConstantNames.*;
 
 public class XmlUtil {
+
+
+    public static String generatePdf(InvoiceData invoiceData) throws Exception {
+        generateXml(new File(INVOICE_XML_PATH),
+                invoiceData, InvoiceData.class);
+        return generatePDF(invoiceData.getOrderId(), new File(INVOICE_XML_PATH),
+                new StreamSource(INVOICE_XSL_PATH));
+
+    }
 
 
     //Generate PDF
     public static String generatePDF(Long orderId, File xml_file, StreamSource xsl_source) throws Exception {
 
-        String path = PDF_BASE_ADDRESS+orderId+"pdf";
+        String path = PDF_BASE_ADDRESS+orderId+".pdf";
         File pdfFile = new File(path);
         pdfFile.createNewFile();
         FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());

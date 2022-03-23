@@ -9,7 +9,7 @@ import static com.increff.commons.Constants.ConstantNames.SEQ_INVENTORY;
 import static com.increff.commons.Constants.ConstantNames.SEQ_INVOICE;
 
 @Entity
-@Table(name="assureInventory", indexes=@Index(name="idx_invoice", columnList = "globalSkuId"))
+@Table(name="assureInvoice", indexes=@Index(name="idx_invoice", columnList = "orderId"))
 @Getter
 @Setter
 public class InvoicePojo {

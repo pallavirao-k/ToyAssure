@@ -3,13 +3,16 @@ package com.increff.commons.Util;
 import com.increff.commons.Data.ErrorData;
 import com.increff.commons.Exception.ApiException;
 
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.increff.commons.Constants.ConstantNames.SEQ_MAX_VAL;
-import static com.increff.commons.Constants.ConstantNames.SEQ_MIN_VAL;
+import static com.increff.commons.Constants.ConstantNames.*;
+import static com.increff.commons.Constants.ConstantNames.MAX_DAYS_DIFFERENCE;
 
 public class ValidationUtil {
 
@@ -19,6 +22,12 @@ public class ValidationUtil {
         }
         if(qty>SEQ_MAX_VAL){
             throw new ApiException(entity+" exceeds limit "+SEQ_MAX_VAL);
+        }
+    }
+
+    public  static void checkDatesLimit(LocalDateTime startDate, LocalDateTime endDate) throws ApiException {
+        if(Period.between(startDate.toLocalDate(), endDate.toLocalDate()).getDays()>MAX_DAYS_DIFFERENCE){
+            throw new ApiException("Difference between Start Date and End Date must not exceed "+ MAX_DAYS_DIFFERENCE);
         }
     }
 

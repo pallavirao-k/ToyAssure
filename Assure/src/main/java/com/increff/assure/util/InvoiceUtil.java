@@ -6,8 +6,10 @@ import com.increff.assure.pojo.ProductPojo;
 import com.increff.commons.Data.InvoiceData;
 import com.increff.commons.Data.InvoiceProductData;
 import com.increff.commons.Data.InvoiceResponse;
+import com.increff.commons.Util.ConvertUtil;
 import com.increff.commons.Util.XmlUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.File;
@@ -29,7 +31,7 @@ public class InvoiceUtil {
         Double total = 0D;
         for(OrderItemPojo oip: orderItemPojos){
             ProductPojo p = globalSkuToProduct.get(oip.getGlobalSkuId());
-            InvoiceProductData ipd = convert(p, InvoiceProductData.class);
+            InvoiceProductData ipd = ConvertUtil.convert(p, InvoiceProductData.class);
             ipd.setQty(oip.getOrderedQty());
             ipd.setSellingPricePerUnit(oip.getSellingPricePerUnit());
             invoiceProductDataList.add(ipd);
@@ -59,17 +61,9 @@ public class InvoiceUtil {
         return  invoiceResponse;
     }
 
-    public static String generatePdf(InvoiceData invoiceData) throws Exception {
-        XmlUtil.generateXml(new File(INVOICE_XML_PATH),
-                invoiceData, InvoiceData.class);
-        return XmlUtil.generatePDF(invoiceData.getOrderId(), new File(INVOICE_XML_PATH),
-                new StreamSource(INVOICE_XSL_PATH));
 
-    }
 
-    public static ResponseEntity<String> generateInvoiceInChannelApp(InvoiceData invoiceData){
-        return postRequest("", invoiceData);
-    }
+
 
 
 //

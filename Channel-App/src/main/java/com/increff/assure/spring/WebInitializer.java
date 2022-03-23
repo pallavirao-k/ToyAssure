@@ -1,4 +1,4 @@
-package com.increff.channelapp.spring;
+package com.increff.assure.spring;
 
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;

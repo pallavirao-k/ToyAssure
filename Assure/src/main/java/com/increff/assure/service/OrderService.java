@@ -4,12 +4,14 @@ import com.increff.assure.dao.OrderDao;
 import com.increff.assure.dao.OrderItemDao;
 import com.increff.assure.pojo.OrderItemPojo;
 import com.increff.assure.pojo.OrderPojo;
+import com.increff.assure.spring.OrderSearchProperties;
 import com.increff.commons.Constants.OrderStatus;
 import com.increff.commons.Exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -57,8 +59,13 @@ public class OrderService {
             orderItemPojo.setAllocatedQty(orderItemPojo.getAllocatedQty()-orderItemPojo.getOrderedQty());
             orderItemPojo.setFulfilledQty(orderItemPojo.getFulfilledQty()+orderItemPojo.getOrderedQty());
         }
+        OrderPojo orderPojo = dao.select(orderId);
+        orderPojo.setOrderStatus(OrderStatus.FULFILLED);
     }
 
+    public List<OrderPojo> searchOrder(OrderSearchProperties properties){
+        return dao.selectByProperties(properties);
+    }
 
     public OrderPojo getCheckOrder(Long id) throws ApiException {
         OrderPojo orderPojo = dao.select(id);

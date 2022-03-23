@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lan="en"  xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="snippets.html :: name_head">
+
+
+</head>
+<body>
+<nav th:replace="snippets.html :: name_navbar"></nav>
+<header>
+
+
+    <div class="toast align-items-center text-white border-0"
+         style="position: fixed; background-color: rgb(196, 0, 0); z-index: 1056; top: 10px; right: 10px;"
+         role="alert" aria-live="assertive" aria-atomic="true" id="EpicToast"></div>
+    <div class="toast align-items-center text-white border-0"
+         style="position: fixed; background-color: rgb(0, 128, 0); z-index: 1056; top: 10px; right: 10px;"
+         role="alert" aria-live="assertive" aria-atomic="true" id="EpicToast1"></div>
+
+</header>
+
+
+<div class="container-fluid px-5 mt-5 pt-3">
+    <div>
+        <h2 class="my-3">Customers</h2>
+        <div>
+            <button type="button" class="btn btn-sm btn-outline-primary mx-1"
+                    data-toggle="modal" data-target="#party-modal" id="resetDialog">Add</button>
+            <button type="button" class="btn btn-sm btn-outline-dark mx-1"
+                    onclick="location.reload()">Refresh</button>
+        </div>
+    </div>
+    <!-- left side ends -->
+    <div class="modal" tabindex="-1" role="dialog" id="party-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Customer</h5>
+                </div>
+                <div class="modal-body">
+                    <form class="form-inline" id="party-form">
+                        <div class="form-group">
+                            <label for="inputPartyName" class="col-sm-2 col-form-label">Name</label>
+                            <div class="col">
+                                <input type="text" class="form-control" name="partyName"
+                                       id="inputPartyName" placeholder="Enter Customer Name" />
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <div class="col">
+                                <input type="hidden" class="form-control" name="partyType"
+                                       id="inputPartyType" value = "CUSTOMER" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class=" close btn btn-outline-secondary"
+                            data-dismiss="modal" id="resetModal">Cancel</button>
+                    <button type="button" class="btn btn-outline-primary"
+                            id="add-party">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Blank Row -->
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table class="table table-striped" id="party-table">
+                <thead>
+                <tr>
+                    <th scope="col">S.No.</th>
+                    <th scope="col">Name</th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+
+
+</div>
+<!-- Container end -->
+<footer class="footer bg-light">
+    Copyright Increff 2022
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+
+    <script th:src="@{/static/customer.js}"></script>
+
+
+
+
+
+
+</footer>
+
+</body>
+</html>

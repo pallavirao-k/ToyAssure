@@ -2,24 +2,27 @@ package com.increff.assure.dto;
 
 import com.increff.assure.pojo.*;
 import com.increff.assure.service.*;
+import com.increff.assure.spring.OrderSearchProperties;
 import com.increff.commons.Constants.OrderStatus;
 import com.increff.commons.Data.ErrorData;
 import com.increff.commons.Data.OrderData;
 import com.increff.commons.Exception.ApiException;
-import com.increff.commons.Form.OrderWithChannelSkuIdForm;
-import com.increff.commons.Form.OrderItemWithChannelSkuId;
-import com.increff.commons.Form.OrderItemWithClientSkuId;
-import com.increff.commons.Form.OrderWithClientSkuIdForm;
+import com.increff.commons.Form.*;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.increff.commons.Constants.ConstantNames.MAX_DAYS_DIFFERENCE;
 import static com.increff.commons.Util.ConvertUtil.convert;
-import static com.increff.commons.Util.ValidationUtil.checkDuplicates;
-import static com.increff.commons.Util.ValidationUtil.validateEmptyFields;
+import static com.increff.commons.Util.ValidationUtil.*;
 
 @Service
 public class OrderDto extends AbstractDto {
@@ -106,6 +109,44 @@ public class OrderDto extends AbstractDto {
         service.changeStatusToAllocated(id);
     }
 
+    public OrderData searchByOrderId(Long orderId) throws ApiException {
+        return convert(service.getCheckOrder(orderId), OrderData.class);
+    }
+
+    public List<OrderData> searchOrder(OrderSearchForm form) throws ApiException {
+        formValidation(form);
+        List<ZonedDateTime> dates = checkAndConvertDates(form.getStartDate(), form.getEndDate());
+        OrderSearchProperties properties = convertToProperties(dates, form);
+        List<OrderPojo> list = service.searchOrder(properties);
+        return convert(list, OrderData.class);
+    }
+
+
+    private OrderSearchProperties convertToProperties(List<ZonedDateTime> dates, OrderSearchForm form){
+        OrderSearchProperties properties = new OrderSearchProperties();
+        properties.setChannelId(form.getChannelId());
+        properties.setOrderStatus(form.getOrderStatus());
+        properties.setChannelOrderId(form.getChannelOrderId());
+        properties.setStartDate(dates.get(0));
+        properties.setEndDate(dates.get(1));
+        return properties;
+    }
+
+
+    private List<ZonedDateTime> checkAndConvertDates(String startDate, String endDate) throws ApiException {
+        if(startDate.isEmpty()&&endDate.isEmpty()){
+            throw new ApiException("StartDate and EndDate must not be empty.");
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        ZoneId timeZone = ZoneId.systemDefault();
+        ZonedDateTime startDateTime = LocalDate.parse(startDate, formatter).atStartOfDay().atZone(timeZone);
+        ZonedDateTime endDateTime = LocalDate.parse(endDate, formatter).atStartOfDay().plusDays(1).atZone(timeZone);
+        //checkDatesLimit(startDateTime, endDateTime);
+        List<ZonedDateTime> list = new ArrayList<>();
+        list.add(startDateTime);
+        list.add(endDateTime);
+        return list;
+    }
 
     private OrderPojo convertUploadOrderForm(OrderWithClientSkuIdForm orderWithClientSkuIdForm) throws ApiException {
         Long channelId = channelService.getCheckChannelByName("internal").getId();
@@ -187,7 +228,7 @@ public class OrderDto extends AbstractDto {
             OrderItemPojo orderItemPojo = new OrderItemPojo();
             orderItemPojo.setGlobalSkuId(productsMap.get(skuId));
             orderItemPojo.setOrderedQty(productQuantitiesMap.get(skuId));
-            orderItemPojo.setAllocatedQty(0L);//qty integer
+            orderItemPojo.setAllocatedQty(0L);
             orderItemPojo.setFulfilledQty(0L);
             orderItemPojo.setOrderId(orderId);
             orderItemPojo.setSellingPricePerUnit(sellingPrice.get(skuId));

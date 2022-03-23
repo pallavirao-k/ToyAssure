@@ -1,11 +1,9 @@
 package com.increff.assure.controller;
 
 import com.increff.assure.dto.InvoiceDto;
-import com.increff.assure.dto.OrderDto;
 import com.increff.commons.Data.InvoiceResponse;
-import com.increff.commons.Data.OrderData;
 import com.increff.commons.Exception.ApiException;
-import com.increff.commons.Form.OrderWithClientSkuIdForm;
+import com.increff.commons.Form.PartyForm;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +17,9 @@ public class InvoiceController {
     @Autowired
     private InvoiceDto dto;
 
-    @ApiOperation(value = "uploads order")
-    @RequestMapping(path = "", method= RequestMethod.GET)
+    @ApiOperation(value = "generates and gets invoice")
+    @RequestMapping(path = "", method = RequestMethod.POST)
     public InvoiceResponse generateInvoice(@RequestParam Long orderId) throws Exception {
         return dto.generateInvoice(orderId);
     }
-
 }
