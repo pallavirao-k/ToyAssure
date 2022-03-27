@@ -2,8 +2,10 @@ package com.increff.assure.controller;
 
 import com.increff.assure.dto.OrderDto;
 import com.increff.commons.Data.OrderData;
+import com.increff.commons.Data.OrderItemData;
 import com.increff.commons.Exception.ApiException;
 import com.increff.commons.Form.OrderSearchForm;
+import com.increff.commons.Form.OrderSearchFormChannelApp;
 import com.increff.commons.Form.OrderWithChannelSkuIdForm;
 import com.increff.commons.Form.OrderWithClientSkuIdForm;
 import io.swagger.annotations.Api;
@@ -40,17 +42,27 @@ public class OrderController {
         dto.allocateOrder(id);
     }
 
+    @ApiOperation(value = "Gets Order Items By ID")
+    @RequestMapping(path = "/order-items/{id}", method= RequestMethod.GET)
+    public List<OrderItemData> getOrderItems(@PathVariable Long id) throws ApiException {
+        return dto.getOrderItems(id);
+    }
+
     @ApiOperation(value = "search order by Order ID")
     @RequestMapping(path = "/search/{orderId}", method= RequestMethod.GET)
     public OrderData searchByOrderId(@PathVariable Long orderId) throws ApiException {
         return dto.searchByOrderId(orderId);
     }
 
-    @ApiOperation(value = "search order by Order ID")
+    @ApiOperation(value = "search order")
     @RequestMapping(path = "/search", method= RequestMethod.POST)
     public List<OrderData> searchOrder(@RequestBody OrderSearchForm orderSearchForm) throws ApiException {
+        System.out.println("'"+orderSearchForm.getEndDate()+"'");
+        System.out.println("'"+orderSearchForm.getChannelOrderId()+"'");
+        System.out.println("'"+orderSearchForm.getChannelId()+"'");
         return dto.searchOrder(orderSearchForm);
     }
+
 
 
 

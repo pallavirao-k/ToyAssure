@@ -1,6 +1,6 @@
 function getPartyUrl() {
-	//var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return "http://localhost:9090/Assure/api/parties";
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/parties";
 }
 
 function addParty() {

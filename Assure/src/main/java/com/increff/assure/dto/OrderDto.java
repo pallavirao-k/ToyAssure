@@ -6,21 +6,18 @@ import com.increff.assure.spring.OrderSearchProperties;
 import com.increff.commons.Constants.OrderStatus;
 import com.increff.commons.Data.ErrorData;
 import com.increff.commons.Data.OrderData;
+import com.increff.commons.Data.OrderItemData;
 import com.increff.commons.Exception.ApiException;
 import com.increff.commons.Form.*;
-import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.increff.commons.Constants.ConstantNames.MAX_DAYS_DIFFERENCE;
 import static com.increff.commons.Util.ConvertUtil.convert;
 import static com.increff.commons.Util.ValidationUtil.*;
 
@@ -99,6 +96,10 @@ public class OrderDto extends AbstractDto {
 
     }
 
+    public List<OrderItemData> getOrderItems(Long orderId){
+        return convert(service.getItemsByOrderId(orderId), OrderItemData.class);
+    }
+
     public void checkAndAllocateOrder(Long id){
         List<OrderItemPojo> orderItemPojoList = service.getItemsByOrderId(id);
         for(OrderItemPojo orderItemPojo:orderItemPojoList){
@@ -114,13 +115,28 @@ public class OrderDto extends AbstractDto {
     }
 
     public List<OrderData> searchOrder(OrderSearchForm form) throws ApiException {
-        formValidation(form);
-        List<ZonedDateTime> dates = checkAndConvertDates(form.getStartDate(), form.getEndDate());
-        OrderSearchProperties properties = convertToProperties(dates, form);
-        List<OrderPojo> list = service.searchOrder(properties);
-        return convert(list, OrderData.class);
+        checkEmptyFields(form);
+        if((form.getStartDate()!=null)^(form.getEndDate()!=null)){
+            throw new ApiException("Start Date and End Date must not be empty");
+        }
+        if(form.getStartDate()!=null && form.getEndDate()!=null){
+            List<ZonedDateTime> dates = checkAndConvertDates(form.getStartDate(), form.getEndDate());
+            OrderSearchProperties properties = convertToProperties(dates, form);
+            List<OrderPojo> pojoList = service.searchOrder(properties);
+            return convert(pojoList, OrderData.class);
+        }
+
+        OrderSearchProperties properties = convertWithoutDates(form);
+        List<OrderPojo> pojoList = service.searchOrderWithoutDates(properties);
+        return convert(pojoList, OrderData.class);
+
     }
 
+    private void checkEmptyFields(OrderSearchForm form){
+        form.setEndDate(form.getEndDate().isEmpty()?null: form.getEndDate());
+        form.setStartDate(form.getStartDate().isEmpty()?null:form.getStartDate());
+        form.setChannelOrderId(form.getChannelOrderId().isEmpty()?null:form.getChannelOrderId());
+    }
 
     private OrderSearchProperties convertToProperties(List<ZonedDateTime> dates, OrderSearchForm form){
         OrderSearchProperties properties = new OrderSearchProperties();
@@ -132,11 +148,8 @@ public class OrderDto extends AbstractDto {
         return properties;
     }
 
-
     private List<ZonedDateTime> checkAndConvertDates(String startDate, String endDate) throws ApiException {
-        if(startDate.isEmpty()&&endDate.isEmpty()){
-            throw new ApiException("StartDate and EndDate must not be empty.");
-        }
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         ZoneId timeZone = ZoneId.systemDefault();
         ZonedDateTime startDateTime = LocalDate.parse(startDate, formatter).atStartOfDay().atZone(timeZone);
@@ -146,6 +159,14 @@ public class OrderDto extends AbstractDto {
         list.add(startDateTime);
         list.add(endDateTime);
         return list;
+    }
+
+    private OrderSearchProperties convertWithoutDates(OrderSearchForm form){
+        OrderSearchProperties properties = new OrderSearchProperties();
+        properties.setChannelId(form.getChannelId());
+        properties.setChannelOrderId(form.getChannelOrderId());
+        properties.setOrderStatus(form.getOrderStatus());
+        return properties;
     }
 
     private OrderPojo convertUploadOrderForm(OrderWithClientSkuIdForm orderWithClientSkuIdForm) throws ApiException {
@@ -170,7 +191,7 @@ public class OrderDto extends AbstractDto {
 
 
     private Map<String, Long> getCheckClientSkuId(Long clientId, List<String> clientSkuIds) throws ApiException {
-        List<ProductPojo> pojoList = productService.getByClientSkuIdAndClientIds(clientId, clientSkuIds);
+        List<ProductPojo> pojoList = productService.getByClientSkuIdsAndClientId(clientId, clientSkuIds);
         List<String> finalClientSkuIds = pojoList.stream().map(ProductPojo::getClientSkuId).collect(Collectors.toList());
         List<String> differences = clientSkuIds.stream().filter(element -> !finalClientSkuIds.contains(element))
                 .collect(Collectors.toList());
@@ -235,6 +256,7 @@ public class OrderDto extends AbstractDto {
             service.insertOrderItem(orderItemPojo);
         }
     }
+
 
 
 

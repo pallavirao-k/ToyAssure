@@ -1,13 +1,14 @@
 
 function getEmployeeUrl() {
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return "http://localhost:9090/Assure/api/products";
+	return baseUrl + "/api/products";
 }
 
 function getPartyUrl() {
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
-	return "http://localhost:9090/Assure/api/parties";
+	return baseUrl + "/api/parties";
 }
+
 
 function csv2Json(){
 const uploadconfirm = document.getElementById("process-data").
@@ -87,10 +88,18 @@ function updateEmployee(event) {
 
 
 function getEmployeeList() {
-	var url = getEmployeeUrl();
+    var clientIdd = $('#inputClientIdSearch').val();
+    var clientSkuIdd = $('#inputClientSkuIdSearch').val();
+    const obj = {clientId:clientIdd, clientSkuId: clientSkuIdd};
+    json = JSON.stringify(obj);
+	var url = getEmployeeUrl()+"/search";
 	$.ajax({
 		url: url,
-		type: 'GET',
+		type: 'POST',
+		data: json,
+		headers: {
+        	'Content-Type': 'application/json'
+        },
 		success: function(data) {
 			//console.log("Employee data fetched");
 			//console.log(data);
@@ -212,11 +221,14 @@ function showSuccess(msg) {
 function init(){
     	csv2Json();
     	$('#update-product').click(updateEmployee);
+    	$('#searchClientId').click(getEmployeeList);
 
 }
 $(document).ready(init);
-$(document).ready(getEmployeeList);
+
 $(document).ready(dropdown);
+$(document).ready(dropdown1);
+$(document).ready(dropdown2);
 
 function dropdown(){
 
@@ -235,6 +247,68 @@ function dropdown(){
 		select.appendChild(opt);
 		}
 	}
+
+	   },
+	   error: function(){
+	   		showError("An error has occurred");
+	   }
+	});
+
+
+}
+
+function dropdown1(){
+
+	var url = getPartyUrl();
+	$.ajax({
+	   url: url,
+	   type: 'GET',
+	   success: function(data) {
+		var select = document.getElementById('inputClientIdSearch');
+		for(var i in data){
+		var e = data[i];
+		if(e.partyType === 'CLIENT'){
+		var opt = document.createElement('option');
+		opt.value = e.partyId;
+		opt.innerHTML = e.partyName;
+		select.appendChild(opt);
+		}
+	}
+	var opt = document.createElement('option');
+        		opt.value = null;
+        		opt.innerHTML = 'None';
+        		select.appendChild(opt);
+
+	   },
+	   error: function(){
+	   		showError("An error has occurred");
+	   }
+	});
+
+
+}
+
+function dropdown2(){
+
+	var url = getEmployeeUrl();
+	$.ajax({
+	   url: url,
+	   type: 'GET',
+	   success: function(data) {
+		var select = document.getElementById('inputClientSkuIdSearch');
+		for(var i in data){
+		var e = data[i];
+		var opt = document.createElement('option');
+		opt.value = e.clientSkuId;
+		opt.innerHTML = e.clientSkuId;
+		select.appendChild(opt);
+	}
+	var opt = document.createElement('option');
+    		opt.value = "";
+    		opt.innerHTML = "None";
+    		select.appendChild(opt);
+
+
 
 	   },
 	   error: function(){

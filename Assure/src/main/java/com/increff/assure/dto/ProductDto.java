@@ -2,10 +2,12 @@ package com.increff.assure.dto;
 import com.increff.assure.pojo.ProductPojo;
 import com.increff.assure.service.PartyService;
 import com.increff.assure.service.ProductService;
+import com.increff.commons.Data.BinSkuData;
 import com.increff.commons.Data.ErrorData;
 import com.increff.commons.Data.ProductData;
 import com.increff.commons.Exception.ApiException;
 import com.increff.commons.Form.ProductForm;
+import com.increff.commons.Form.ProductSearchForm;
 import com.increff.commons.Form.UpdateProductForm;
 import com.increff.commons.Form.UploadProductForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +52,14 @@ public class ProductDto extends AbstractDto {
         return convert(p, ProductData.class);
 
     }
+
+    public List<ProductData> search(ProductSearchForm form){
+        validateSearchForm(form);
+        return service.search(form.getClientId(), form.getClientSkuId()).stream().map(x->convert(x, ProductData.class))
+                .collect(Collectors.toList());
+    }
+
+
     public List<ProductData> getAll(){
         List<ProductPojo> list = service.getAll();
         return list.stream().map(x->convert(x,ProductData.class)).collect(Collectors.toList());
@@ -105,6 +115,11 @@ public class ProductDto extends AbstractDto {
         }
     }
 
+    private void validateSearchForm(ProductSearchForm form){
+        if(form.getClientSkuId().isEmpty()){
+            form.setClientSkuId(null);
+        }
+    }
 
     private void validateProductDesc(List<ProductForm> formList) throws ApiException {
         List<Long> indexes = new ArrayList<>();

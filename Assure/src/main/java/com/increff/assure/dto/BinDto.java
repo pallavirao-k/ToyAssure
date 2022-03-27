@@ -9,6 +9,7 @@ import com.increff.commons.Data.BinSkuData;
 import com.increff.commons.Data.ErrorData;
 import com.increff.commons.Exception.ApiException;
 import com.increff.commons.Form.BinSkuForm;
+import com.increff.commons.Form.BinSkuSearchForm;
 import com.increff.commons.Form.UpdateBinSkuForm;
 import com.increff.commons.Form.UploadBinSkuForm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ public class BinDto extends AbstractDto {
         formValidation(uploadBinSkuForm);
         checkBinIds(uploadBinSkuForm.getFormList());
         validateClientSkuId(uploadBinSkuForm.getFormList());
+        validateBinAndClientSku(uploadBinSkuForm.getFormList());
         checkClientSkuId(uploadBinSkuForm.getClientId(), uploadBinSkuForm.getFormList());
         for(BinSkuForm binSkuForm:uploadBinSkuForm.getFormList()) {
             BinSkuPojo binSkuPojo = convertBinSkuForm(uploadBinSkuForm.getClientId(),binSkuForm);
@@ -56,16 +58,27 @@ public class BinDto extends AbstractDto {
             inventoryService.addInventory(binSkuPojo);
         }
     }
-
+    @Transactional(rollbackOn = ApiException.class)
     public void updateSingleBinSku(Long id, UpdateBinSkuForm binSkuForm) throws ApiException {
         BinSkuPojo binSkuPojo = service.getBinSku(id);
-        inventoryService.updateInventory(binSkuPojo.getGlobalSkuId(), binSkuForm.getQty());
-        service.updateQty(binSkuPojo, binSkuForm.getQty());
+        Long qtyToAdd = service.updateQty(binSkuPojo.getId(), binSkuForm.getQty());
+        inventoryService.updateInventory(binSkuPojo.getGlobalSkuId(), qtyToAdd);
+
     }
 
     public BinSkuData getBinSku(Long id) throws ApiException {
         BinSkuPojo pojo = service.getBinSku(id);
         return convert(pojo, BinSkuData.class);
+    }
+
+    public List<BinSkuData> getAllBinSku() throws ApiException {
+        List<BinSkuPojo> pojos = service.getAllBinSku();
+        return convert(pojos, BinSkuData.class);
+    }
+
+    public List<BinSkuData> search(BinSkuSearchForm form){
+        return service.search(form.getBinId(), form.getGlobalSkuId()).stream().map(x->convert(x,BinSkuData.class))
+                .collect(Collectors.toList());
     }
 
     private void getGSKUId(Long clientId, String clientSkuId, BinSkuPojo binSkuPojo){
@@ -103,22 +116,11 @@ public class BinDto extends AbstractDto {
             if(form.getClientSkuId().trim().isEmpty()){
                 indexes.add(index);
             }
-            else{
-                if(!clientSkuIds.contains(form.getClientSkuId())){
-                    clientSkuIds.add(form.getClientSkuId());
-                }
-                else{
-                    indexes2.add(index);
-                }
-            }
 
             index++;
         }
         if(indexes.size()>0){
-            throw new ApiException(ErrorData.convert("Client SKU ID(s) of these indexes are blank", indexes));
-        }
-        if(indexes2.size()>0){
-            throw new ApiException(ErrorData.convert("Client SKU ID(s) at these indexes are being repeated", indexes2));
+            throw new ApiException(ErrorData.convert("Client SKU ID(s) of these indexes are empty", indexes));
         }
 
     }
@@ -129,7 +131,7 @@ public class BinDto extends AbstractDto {
     private void checkClientSkuId(Long clientId, List<BinSkuForm> formList) throws ApiException {
 
         List<String> initialClientSkuIds = formList.stream().map(BinSkuForm::getClientSkuId).collect(Collectors.toList());
-        List<ProductPojo> pojoList = productService.getByClientSkuIdAndClientIds(clientId, initialClientSkuIds);
+        List<ProductPojo> pojoList = productService.getByClientSkuIdsAndClientId(clientId, initialClientSkuIds);
         List<String> finalClientSkuIds = pojoList.stream().map(ProductPojo::getClientSkuId).collect(Collectors.toList());
         List<String> differences = initialClientSkuIds.stream().filter(element -> !finalClientSkuIds.contains(element)).collect(Collectors.toList());
 
@@ -141,6 +143,24 @@ public class BinDto extends AbstractDto {
 
     private void validateClient(Long clientId) throws ApiException {
         partyService.getCheck(clientId);
+    }
+
+    private void validateBinAndClientSku(List<BinSkuForm> formList) throws ApiException {
+        Set<String> set = new HashSet<>();
+        List<Long> indexes = new ArrayList<>();
+        Long index = 1L;
+        for(BinSkuForm form: formList){
+            if(!set.contains(form.getClientSkuId()+form.getBinId())){
+                set.add(form.getClientSkuId()+form.getBinId());
+                index++;
+                continue;
+            }
+            indexes.add(index++);
+            if(indexes.size()>0){
+                throw new ApiException(ErrorData.convert("Duplicate Bin ID(s) and Client SKU ID(s) at indexes: ", indexes));
+            }
+
+        }
     }
 
 

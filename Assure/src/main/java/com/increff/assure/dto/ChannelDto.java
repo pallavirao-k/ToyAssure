@@ -5,6 +5,7 @@ import com.increff.assure.pojo.ProductPojo;
 import com.increff.assure.service.ChannelService;
 import com.increff.assure.service.PartyService;
 import com.increff.assure.service.ProductService;
+import com.increff.commons.Constants.Invoice;
 import com.increff.commons.Data.ChannelData;
 import com.increff.commons.Data.ErrorData;
 import com.increff.commons.Exception.ApiException;
@@ -35,7 +36,7 @@ public class ChannelDto extends AbstractDto {
     private ProductService productService;
 
     public ChannelData add(ChannelForm form) throws ApiException {
-        formValidation(form);
+        checkDefault(form);
         validateEmptyField(form.getChannelName(), "Channel name");
         return convert(service.addChannel(convert(form, ChannelPojo.class)), ChannelData.class);
     }
@@ -46,6 +47,15 @@ public class ChannelDto extends AbstractDto {
     public List<ChannelData> getAllChannels(){
         List<ChannelPojo> list = service.getAllChannels();
         return list.stream().map(x->convert(x,ChannelData.class)).collect(Collectors.toList());
+    }
+
+    private void checkDefault(ChannelForm form){
+        if(form.getChannelName() == (null)){
+            form.setChannelName("internal");
+        }
+        if(form.getInvoiceType() ==null){
+            form.setInvoiceType(Invoice.InvoiceType.CHANNEL);
+        }
     }
 
 

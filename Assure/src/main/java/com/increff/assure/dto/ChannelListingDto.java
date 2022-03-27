@@ -73,7 +73,7 @@ public class ChannelListingDto extends AbstractDto {
     private void checkClientSkuIds(Long clientId, List<ChannelListingForm> formList) throws ApiException {
 
         List<String> initialClientSkuIds = formList.stream().map(ChannelListingForm::getClientSkuId).collect(Collectors.toList());
-        List<ProductPojo> pojoList = productService.getByClientSkuIdAndClientIds(clientId, initialClientSkuIds);
+        List<ProductPojo> pojoList = productService.getByClientSkuIdsAndClientId(clientId, initialClientSkuIds);
         List<String> finalClientSkuIds = pojoList.stream().map(ProductPojo::getClientSkuId).collect(Collectors.toList());// use contains in set
         List<String> differences = initialClientSkuIds.stream().filter(element -> !finalClientSkuIds.contains(element))
                 .collect(Collectors.toList());
@@ -103,7 +103,6 @@ public class ChannelListingDto extends AbstractDto {
                 .map(ChannelListingForm::getChannelSkuId).collect(Collectors.toList());
         validateEmptyFields(clientSkuIds, "Client SKU ID(s)");
         validateEmptyFields(channelSkuIds, "Channel SKU IS(s)");
-        checkDuplicates(clientSkuIds, "Client SKU ID(s)");
         checkDuplicates(channelSkuIds, "Channel SKU ID(s)");
     }
 

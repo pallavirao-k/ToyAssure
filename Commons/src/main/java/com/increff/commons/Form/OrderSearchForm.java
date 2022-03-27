@@ -11,14 +11,14 @@ import java.time.ZonedDateTime;
 @Setter
 // change datatypes to their respective data types
 public class OrderSearchForm {
-    @NotNull
+
     private String startDate;
-    @NotNull
+
     private String endDate;
-    @NotNull
+
     private Long channelId;
-    @NotNull
+
     private OrderStatus orderStatus;
-    @NotNull
+
     private String channelOrderId;
 }

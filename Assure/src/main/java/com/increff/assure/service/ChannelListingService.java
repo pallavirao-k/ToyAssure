@@ -14,7 +14,7 @@ import java.util.Objects;
 
 @Service
 @Transactional(rollbackOn = ApiException.class)
-public class ChannelListingService {
+public class  ChannelListingService {
 
     @Autowired
     private ChannelListingDao dao;

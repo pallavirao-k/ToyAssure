@@ -18,7 +18,7 @@ public class InvoiceController {
     private InvoiceDto dto;
 
     @ApiOperation(value = "generates and gets invoice")
-    @RequestMapping(path = "", method = RequestMethod.POST)
+    @RequestMapping(path = "", method = RequestMethod.GET)
     public InvoiceResponse generateInvoice(@RequestParam Long orderId) throws Exception {
         return dto.generateInvoice(orderId);
     }

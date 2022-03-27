@@ -37,4 +37,6 @@ public class PartyDao extends GenericDao<PartyPojo> {
     }
 
 
+
+
 }

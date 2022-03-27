@@ -28,7 +28,6 @@ public class InventoryService {
 
     public void addInventory(BinSkuPojo binSkuPojo) throws ApiException {
         InventoryPojo ip = getInventory(binSkuPojo.getGlobalSkuId());
-        //System.out.println(Objects.isNull(ip));
         if(Objects.isNull(ip)){
             createInventory(binSkuPojo.getGlobalSkuId(), binSkuPojo.getQty());
             return;
@@ -66,10 +65,10 @@ public class InventoryService {
 
     public void updateAvailableQty(Long id, Long qty) throws ApiException {
         InventoryPojo ip = dao.select(id);
-        if(ip.getAllocatedQty()>qty){
+        if(ip.getAllocatedQty()>ip.getAvailableQty()+qty){
             throw new ApiException("Available quantity cannot be less than Allocated quantity");
         }
-        ip.setAvailableQty(qty);
+        ip.setAvailableQty(ip.getAvailableQty()+qty);
 
     }
 

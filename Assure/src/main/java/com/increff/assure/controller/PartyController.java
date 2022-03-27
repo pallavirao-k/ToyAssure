@@ -30,6 +30,7 @@ public class PartyController {
     }
 
 
+
     @ApiOperation(value = "Gets a single party by ID")
     @RequestMapping(path = "/{id}", method = RequestMethod.GET)
     public PartyData get(@PathVariable Long id) throws ApiException {

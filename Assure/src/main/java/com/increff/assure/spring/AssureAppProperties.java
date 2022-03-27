@@ -8,6 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 @Setter
 public class AssureAppProperties {
 
-    @Value("${channel.baseUrl}")
-    public static String channelBaseUrl;
+    @Value("${channel.serverUri}")
+    public String channelBaseUrl;
 }

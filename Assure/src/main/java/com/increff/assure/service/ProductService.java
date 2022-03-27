@@ -37,6 +37,15 @@ public class ProductService extends AbstarctService{
         return getCheck(id);
     }
 
+    public List<ProductPojo> getByClientId(Long clientId){
+        return dao.selectByClientId(clientId);
+    }
+
+    public List<ProductPojo> search(Long clientId, String clientSkuId){
+        return dao.search(clientId, clientSkuId);
+    }
+
+
     public List<ProductPojo> getAll(){
         return dao.selectAll();
     }
@@ -50,24 +59,25 @@ public class ProductService extends AbstarctService{
         return p;
     }
 
-    private void updateFields(ProductPojo ex, ProductPojo p){
-        ex.setProductName(p.getProductName());
-        ex.setBrandId(p.getBrandId());
-        ex.setProductMrp(p.getProductMrp());
-        ex.setDescription(p.getDescription());
-    }
 
     public ProductPojo getByClientSkuIdAndClientId(String clientSkuId, Long clientId){
         return dao.selectByClientSkuIdAndClientId(clientSkuId, clientId);
     }
 
-    public List<ProductPojo> getByClientSkuIdAndClientIds(Long clientId, List<String> clientSkuIds){
+    public List<ProductPojo> getByClientSkuIdsAndClientId(Long clientId, List<String> clientSkuIds){
         return dao.selectByClientIdAndClientSkuIds(clientId,clientSkuIds); // partitioning and check for empty list
     }
 
     public Map<Long, ProductPojo> getByGlobalSkuIds(List<Long> globalSkuIds){
         return dao.selectByGlobalSkuIds(globalSkuIds).stream().collect(Collectors.
                 toMap(value ->value.getGlobalSkuId(), value->value));
+    }
+
+    private void updateFields(ProductPojo ex, ProductPojo p){
+        ex.setProductName(p.getProductName());
+        ex.setBrandId(p.getBrandId());
+        ex.setProductMrp(p.getProductMrp());
+        ex.setDescription(p.getDescription());
     }
 
 

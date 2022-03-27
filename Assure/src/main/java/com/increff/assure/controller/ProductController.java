@@ -3,6 +3,7 @@ import com.increff.assure.dto.ProductDto;
 import com.increff.commons.Data.ProductData;
 import com.increff.commons.Exception.ApiException;
 import com.increff.commons.Form.ProductForm;
+import com.increff.commons.Form.ProductSearchForm;
 import com.increff.commons.Form.UpdateProductForm;
 import com.increff.commons.Form.UploadProductForm;
 import io.swagger.annotations.Api;
@@ -43,4 +44,11 @@ public class ProductController {
     public List<ProductData> getAll() throws ApiException {
        return dto.getAll();
     }
+
+    @ApiOperation(value = "searchs by client ID OR client SKU ID")
+    @RequestMapping(path = "/search", method = RequestMethod.POST)
+    public List<ProductData> getByClientId(@RequestBody ProductSearchForm form) throws ApiException {
+        return dto.search(form);
+    }
+
 }

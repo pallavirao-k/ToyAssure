@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lan="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="snippets.html :: name_head"></head>
+<body>
+
+<nav th:replace="snippets.html :: name_navbar"></nav>
+<header>
+    <div class="toast align-items-center text-white border border-danger"
+         style="position: fixed; background-color: rgb(196, 0, 0); z-index: 1056; top: 10px; right: 10px;"
+         role="alert" aria-live="assertive" aria-atomic="true" id="EpicToast"></div>
+    <div class="toast align-items-center text-white border border-success"
+         style="position: fixed; background-color: rgb(0, 128, 0); z-index: 1056; top: 10px; right: 10px;"
+         role="alert" aria-live="assertive" aria-atomic="true" id="EpicToast1"></div>
+
+</header>
+
+
+
+<div class="container-fluid px-5 mt-1 pt-3">
+    <div>
+        <h2 class="my-3">Order</h2>
+        <div  style="right:20px;" >
+            <button type="button" class="btn btn-sm btn-outline-primary mx-1"
+                    data-toggle="modal" data-target="#upload-order-modal">
+                Upload Order</button>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-12">
+
+
+            <form class="form-inline" id="order-search-form">
+                <div class="row">
+                    <div class="col">
+
+                        <label for="inputStartdate" class="col-sm-2 col-form-label">StartDate</label>
+                        <div class="col">
+                            <div class="input-group date" id="datepicker1">
+                                <input type="text" class="form-control" name="startDate"
+                                       id="inputStartdate" placeholder="Enter Start Date">
+                                <div class="input-group-append">
+										<span class="input-group-text bg-white"> <i
+                                                class="fa fa-calendar"></i>
+										</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <label for="inputEnddate" class="col-sm-2 col-form-label">EndDate</label>
+                        <div class="col">
+                            <div class="input-group date" id="datepicker2">
+                                <input type="text" class="form-control" name="endDate"
+                                       id="inputEnddate" placeholder="Enter End Date">
+                                <div class="input-group-append">
+										<span class="input-group-text bg-white"> <i
+                                                class="fa fa-calendar"></i>
+										</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <label for="inputChannelId" class="col-sm-2 col-form-label">ChannelID</label>
+                        <div class="col">
+                            <input type="text" class="form-control" name="channelId"
+                                   id="inputChannelId" placeholder="Enter Channel ID">
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <label for="inputChannelOrderIdSearch" class="col-sm-2 col-form-label">ChannelOrderId</label>
+                        <div class="col">
+                            <input type="text" class="form-control" name="channelOrderId"
+                                   id="inputChannelOrderIdSearch" placeholder="Enter Channel Order ID">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputOrderStatus" class="col-sm-2 col-form-label">OrderStatus</label>
+                        <div class="col-sm-10">
+                            <div class="custom-select" style="width:200px;">
+                                <select class="selection"id="inputOrderStatus" name="orderStatus">
+                                    <option value="CREATED">CREATED</option>
+                                    <option value="ALLOCATED">ALLOCATED</option>
+                                    <option value="FULFILLED">FULFILLED</option>
+                                </select>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <br>
+
+                <button type="button" class="btn btn-sm btn-outline-primary mr-2"
+                        id="search-orders">Search</button>
+                <button type="button" class="btn btn-sm btn-outline-dark mx-1"
+                        onclick="location.reload()">Refresh</button>
+
+            </form>
+            <br> <br>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 table-responsive">
+            <table class="table table-striped" id="order-table">
+                <thead>
+                <tr>
+                    <th scope="col">Client ID</th>
+                    <th scope="col">Customer ID</th>
+                    <th scope="col">Channel ID</th>
+                    <th scope="col">Channel Order ID</th>
+                    <th scope="col">Options</th>
+
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+
+    <div class="modal" id="order-item-modal" >
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Order Items</h5>
+                    <br>
+                    <div class = "text-info" style="position: relative;font-weight: bold;">
+                        <span id="spanB"></span>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12 table-responsive">
+                            <table class="table table-striped" id="order-item-table">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Product Name</th>
+                                    <th scope="col">Brand</th>
+                                    <th scope="col">Ordered Quantity</th>
+                                    <th scope="col">Fulfilled Quantity</th>
+                                    <th scope="col">Unit Price</th>
+                                    <th scope="col">Amount</th>
+
+
+                                </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer" id ="mf">
+                    <button type="button"
+                            class="btn btn-sm btn-outline-secondary mr-2"
+                            data-dismiss="modal" >Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Employee Edit Modal -->
+    <div class="modal" tabindex="-1" role="dialog"
+         id="upload-order-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload Order</h5>
+                </div>
+
+                <div class="modal-body">
+                    <form id="upload-order-form">
+                        <div class="col">
+                            <label for="inputClientId" class="col-sm-2 col-form-label">ClientName</label>
+                            <div class="custom-select" style="width:500px;">
+                                <select class="selection"id="inputClientId" name="clientId"></select>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <label for="inputCustomerId" class="col-sm-2 col-form-label">CustomerName</label>
+                            <div class="custom-select" style="width:500px;">
+                                <select class="selection"id="inputCustomerId" name="customerId"></select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputChannelOrderId" class="col-sm-2 col-form-label">ChannelOrderID</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="channelOrderId"
+                                     id="inputChannelOrderId"  placeholder="Enter Channel Order ID">
+                            </div>
+                        </div>
+
+
+                        <br>
+                        <div class="col">
+                            <div class="col">
+                                <input type="file" class="form-control" id="employeeFile">
+                            </div>
+                        </div>
+                    </form>
+
+
+
+                    <a th:href="@{/sample/product_sample.tsv}" target="_blank">Download
+                        Sample</a>
+                    <div id="row-box" style="display: none;">
+                        <br> Rows: <span id="rowCount">0</span>, Processed: <span
+                            id="processCount">0</span>, Errors: <span id="errorCount">0</span>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-sm btn-outline-warning mr-2"
+                            id="download-errors" style="display: none;">Download
+                        Errors</button>
+                    <button type="button"
+                            class="btn btn-sm btn-outline-secondary mr-2"
+                            data-dismiss="modal" id="resetBox">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-outline-primary mr-2"
+                            id="process-data">Upload</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<!-- Container end -->
+<footer class="footer bg-light">
+    Copyright Increff 2022
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src = "https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script th:src="@{/static/order.js}"></script>
+</footer>
+
+
+
+</body>
+</html>

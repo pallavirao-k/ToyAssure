@@ -17,6 +17,20 @@
 </header>
 
 
+<div class="custom-select" style="width:500px;">
+  <select class="selection"id="inputClientIdSearch" name="clientId"
+          style="position: absolute; top: 23%; right:24%; width:150px;"></select>
+</div>
+
+<div class="custom-select" style="width:500px;">
+  <select class="selection"id="inputClientSkuIdSearch" name="clientSkuId"
+          style="position: absolute; top: 23%; right:10%; width:150px;"></select>
+</div>
+
+<button type="button" class="btn btn-outline-primary mx-1" id="searchClientId"
+          style="position: absolute; top: 23%; right:3%;">
+    Search</button>
+
 
 <div class="container-fluid px-5 mt-5 pt-3">
   <div>
@@ -24,9 +38,12 @@
     <div>
       <button type="button" class="btn btn-sm btn-outline-primary mx-1"
               data-toggle="modal" data-target="#upload-employee-modal">
-        Upload</button>
+        Upload Products</button>
+
       <button type="button" class="btn btn-sm btn-outline-dark mx-1"
               onclick="location.reload()">Refresh</button>
+
+
     </div>
   </div>
 

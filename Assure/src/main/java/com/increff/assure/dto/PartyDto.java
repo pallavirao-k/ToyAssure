@@ -30,6 +30,7 @@ public class PartyDto extends AbstractDto {
     }
 
 
+
     public PartyData get(Long id) throws ApiException {
         return convert(service.get(id),PartyData.class);
     }

@@ -22,7 +22,7 @@ public class ChannelListingController {
     private ChannelListingDto dto;
 
     @ApiOperation(value = "Adds channel-listings")
-    @RequestMapping(path = "/channel-listings", method = RequestMethod.POST)
+    @RequestMapping(path = "", method = RequestMethod.POST)
     public List<ChannelListingData> addChannelListings(@RequestBody UploadChannelListingForm form) throws ApiException {
         return dto.addChannelListings(form);
     }

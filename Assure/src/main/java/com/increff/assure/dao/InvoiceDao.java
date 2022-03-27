@@ -9,7 +9,7 @@ import javax.persistence.TypedQuery;
 @Repository
 public class InvoiceDao extends GenericDao<InvoicePojo>{
 
-    private static final String SELECT_BY_ORDER_ID = "SELECT p from InvoicePojo p WHERE orderID =: orderId";
+    private static final String SELECT_BY_ORDER_ID = "SELECT p from InvoicePojo p WHERE orderId =: orderId";
 
     public InvoicePojo selectByOrderId(Long orderId){
         InvoicePojo invoicePojo;

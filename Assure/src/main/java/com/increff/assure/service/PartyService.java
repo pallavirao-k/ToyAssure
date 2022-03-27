@@ -30,6 +30,7 @@ public class PartyService extends AbstarctService {
     }
 
 
+
     public PartyPojo get(Long id) throws  ApiException{
         return getCheck(id);
     }

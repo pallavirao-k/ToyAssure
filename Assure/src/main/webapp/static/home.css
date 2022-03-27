@@ -27,13 +27,6 @@ body {
   padding-top: 20px;
 }
 
-/* Control the left side */
-.left {
-  left: 0;
-   padding: 12px 16px;
-
-
-}
 
 .b{
 
@@ -44,24 +37,19 @@ body {
   height:80%
 }
 
-/* Control the right side */
-.right {
-  right: 0;
-  padding: 12px 16px;
 
-}
+
+
 
 
 /* Style the image inside the centered container, if needed */
 
+div.leftSide{
+position: absolute;
+left:80%;
+right: 25px;
+width : 200px;
 
-/* If you want the content centered horizontally and vertically */
-.centered{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
 }
 
 .highlighted{
@@ -90,7 +78,7 @@ modal:nth-of-type(even) {
   font-size: 1.25rem;
   cursor: pointer;
   line-height: 1.1;
-  background-color: #fff;
+  background-color: grey;
   background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
 }
 
@@ -104,7 +92,7 @@ modal:nth-of-type(even) {
   font-size: 1.25rem;
   cursor: pointer;
   line-height: 1.1;
-  background-color: #fff;
+  background-color: grey;
   background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
 }
 

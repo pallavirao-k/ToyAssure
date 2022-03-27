@@ -1,6 +1,8 @@
 package com.increff.assure.dao;
 
+import com.increff.assure.pojo.BinSkuPojo;
 import com.increff.assure.pojo.ProductPojo;
+import com.increff.commons.Constants.Party;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
@@ -17,6 +19,10 @@ public class ProductDao extends GenericDao<ProductPojo> {
     private static final String SELECT_BY_CLIENT_SKU_ID_CLIENT_ID = "select p from ProductPojo p where clientSkuId =: clientSkuId AND clientId =: clientId";
     private static final String SELECT_BY_CLIENT_ID_AND_CLIENT_SKU_IDS = "select p from ProductPojo p where clientId =: clientId AND clientSkuId IN (:clientSkuIds)";
     private static final String SELECT_BY_GLOBAL_SKU_IDS = "select p from ProductPojo p where globalSkuId IN (:globalSkuIds)";
+    private static final String SELECT_BY_CLIENT_ID = "select p from ProductPojo p where clientId =: clientId";
+    private static String SELECT_BY_CLIENT_ID_OR_CLIENT_SKUID = "select p from ProductPojo p "
+            + "where (clientId = :clientId OR :clientId IS NULL)  AND "
+            + "(clientSkuId = :clientSkuId OR :clientSkuId IS NULL)";
 
     public ProductPojo selectByClientSkuIdAndClientId(String clientSkuId, Long clientId){
         ProductPojo p;
@@ -54,6 +60,32 @@ public class ProductDao extends GenericDao<ProductPojo> {
             finalList.addAll(q.getResultList());
         }
         return finalList;
+    }
+
+
+    public List<ProductPojo> selectByClientId(Long clientId){
+        List<ProductPojo> productPojoList;
+        try{
+            TypedQuery<ProductPojo> q = getQuery(SELECT_BY_CLIENT_ID, ProductPojo.class);
+            q.setParameter("clientId", clientId);
+            productPojoList = q.getResultList();
+        }catch (NoResultException e){
+            productPojoList= new ArrayList<>();
+        }
+        return productPojoList;
+    }
+
+    public List<ProductPojo> search(Long clientId, String clientSkuId){
+        List<ProductPojo> bsp;
+        try {
+            TypedQuery<ProductPojo> q = getQuery(SELECT_BY_CLIENT_ID_OR_CLIENT_SKUID, ProductPojo.class);
+            q.setParameter("clientId", clientId);
+            q.setParameter("clientSkuId", clientSkuId);
+            bsp = q.getResultList();
+        }catch (NoResultException e){
+            bsp = new ArrayList<>();
+        }
+        return bsp;
     }
 
 

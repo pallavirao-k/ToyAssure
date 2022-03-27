@@ -1,5 +1,6 @@
 package com.increff.assure.spring;
 
+import com.increff.assure.service.ClientWrapper;
 import lombok.var;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,5 +20,20 @@ public class RestConfig {
             factory.setReadTimeout(3000);//TODO 45sec
 
             return new RestTemplate(factory);
+    }
+
+    @Bean
+    public AssureAppProperties assureAppProperties(){
+        return new AssureAppProperties();
+    }
+
+    @Bean
+    public RestTemplateUrls restTemplateUrls(){
+        return new RestTemplateUrls();
+    }
+
+    @Bean
+    public ClientWrapper clientWrapper(){
+        return new ClientWrapper();
     }
 }

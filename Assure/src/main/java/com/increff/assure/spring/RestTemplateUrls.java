@@ -1,8 +1,13 @@
 package com.increff.assure.spring;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class RestTemplateUrls {
 
-    public static String getChannelAppInvoiceUri(){
-        return AssureAppProperties.channelBaseUrl+"api/invoice";
+    @Autowired
+    AssureAppProperties properties;
+
+    public String getChannelAppInvoiceUri(){
+        return properties.getChannelBaseUrl()+"invoice";
     }
 }

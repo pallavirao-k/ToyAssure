@@ -39,6 +39,13 @@ public class OrderService {
         return dao.selectByChannel(channelId, channelOrderId);
     }
 
+    public List<OrderPojo> getAllOrders(){
+        return dao.selectAll();
+    }
+    public List<OrderItemPojo> getAllOrderItems(){
+        return orderItemDao.selectAll();
+    }
+
     public void changeStatusToAllocated(Long id){
         OrderPojo orderPojo = dao.select(id);
         orderPojo.setOrderStatus(OrderStatus.ALLOCATED);
@@ -67,6 +74,11 @@ public class OrderService {
         return dao.selectByProperties(properties);
     }
 
+    public List<OrderPojo> searchOrderWithoutDates(OrderSearchProperties properties){
+        return dao.selectByPropertiesWithoutDates(properties);
+    }
+
+
     public OrderPojo getCheckOrder(Long id) throws ApiException {
         OrderPojo orderPojo = dao.select(id);
         if(Objects.isNull(orderPojo)){
@@ -74,5 +86,7 @@ public class OrderService {
         }
         return orderPojo;
     }
+
+
 
 }

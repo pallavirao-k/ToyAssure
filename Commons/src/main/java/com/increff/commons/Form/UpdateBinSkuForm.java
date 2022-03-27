@@ -12,13 +12,10 @@ import static com.increff.commons.Constants.ConstantNames.SEQ_MIN_VAL;
 @Getter
 @Setter
 public class UpdateBinSkuForm {
-    @NotNull
-    private Long binId;
-    @NotNull
-    private Long globalSkuId;
-    @NotNull
+
     @Min(value = 1L)
     @Max(value = 5000L)
+    @NotNull
     private Long qty;
 
 

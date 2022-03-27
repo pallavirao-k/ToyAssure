@@ -23,4 +23,21 @@ public class RestConfig {
 
             return new RestTemplate(factory);
     }
+
+    @Bean
+    public ApplicationProperties applicationProperties(){
+        return new ApplicationProperties();
+    }
+
+    @Bean
+    public RestTemplateUrls restTemplateUrls(){
+        return new RestTemplateUrls();
+    }
+
+    @Bean
+    public ClientWrapper clientWrapper(){
+        return new ClientWrapper();
+    }
+
+
 }

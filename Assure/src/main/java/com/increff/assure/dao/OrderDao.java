@@ -14,8 +14,15 @@ public class OrderDao extends GenericDao<OrderPojo> {
 
     private static String SELECT_BY_CHANNEL_ID_CHANNEL_ORDER_ID = "select p from OrderPojo p where channelId=:channelId"
             + " AND channelOrderId=:channelOrderId";
-    private static String SELECT_BY_PROPERTIES = "select p from OrderPojo p where channelId=:channelId AND "+
-            "channelOrderId=:channelOrderId AND orderStatus=:orderStatus AND createdAt BETWEEN :dt1 AND :dt2";
+    private static String SELECT_BY_PROPERTIES = "select p from OrderPojo p "+
+            "where (channelId = :channelId OR :channelId IS NULL)  AND "+
+            "(channelOrderId=:channelOrderId OR :channelOrderId IS NULL)  AND"+
+            "(orderStatus=:orderStatus OR :orderStatus IS NULL) AND "+
+            "createdAt BETWEEN :dt1 AND :dt2";
+    private static String SELECT_BY_PROPERTIES_WITHOUT_DATES = "select p from OrderPojo p "+
+            "where (channelId = :channelId OR :channelId IS NULL)  AND "+
+            "(channelOrderId=:channelOrderId OR :channelOrderId IS NULL)  AND"+
+            "(orderStatus=:orderStatus OR :orderStatus IS NULL)";
 
 
     public OrderPojo insertAndReturnPojo(OrderPojo orderPojo){
@@ -46,5 +53,15 @@ public class OrderDao extends GenericDao<OrderPojo> {
             q.setParameter("orderStatus", properties.getOrderStatus());
             return q.getResultList();
     }
+
+    public List<OrderPojo> selectByPropertiesWithoutDates(OrderSearchProperties properties){
+
+        TypedQuery<OrderPojo> q = getQuery(SELECT_BY_PROPERTIES_WITHOUT_DATES, OrderPojo.class);
+        q.setParameter("channelId", properties.getChannelId());
+        q.setParameter("channelOrderId", properties.getChannelOrderId());
+        q.setParameter("orderStatus", properties.getOrderStatus());
+        return q.getResultList();
+    }
+
 
 }

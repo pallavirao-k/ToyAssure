@@ -3,6 +3,7 @@ import com.increff.assure.dto.BinDto;
 import com.increff.commons.Data.BinData;
 import com.increff.commons.Data.BinSkuData;
 import com.increff.commons.Exception.ApiException;
+import com.increff.commons.Form.BinSkuSearchForm;
 import com.increff.commons.Form.UpdateBinSkuForm;
 import com.increff.commons.Form.UploadBinSkuForm;
 import io.swagger.annotations.Api;
@@ -40,7 +41,7 @@ public class BinController {
 
 
     @ApiOperation(value = "Updates a Bin wise inventory")
-    @RequestMapping(path = "/skus/{id}", method = RequestMethod.PUT)
+    @RequestMapping(path = "/skus", method = RequestMethod.PUT)
     public void updateBinSku(@RequestParam Long id, @RequestBody UpdateBinSkuForm binSkuForm) throws ApiException {
         dto.updateSingleBinSku(id, binSkuForm);
     }
@@ -49,6 +50,18 @@ public class BinController {
     @RequestMapping(path = "/skus/{id}", method=RequestMethod.GET)
     public BinSkuData getBinSku(@PathVariable Long id) throws ApiException {
         return dto.getBinSku(id);
+    }
+
+    @ApiOperation(value = "Gets a BinSku by Id")
+    @RequestMapping(path = "/skus", method=RequestMethod.GET)
+    public List<BinSkuData> getAllBinSku() throws ApiException {
+        return dto.getAllBinSku();
+    }
+
+    @ApiOperation(value = "search bin sku by binId and globalSkuId")
+    @RequestMapping(path = "/skus/search", method=RequestMethod.POST)
+    public List<BinSkuData> search(@RequestBody BinSkuSearchForm form) throws ApiException {
+        return dto.search(form);
     }
 
 

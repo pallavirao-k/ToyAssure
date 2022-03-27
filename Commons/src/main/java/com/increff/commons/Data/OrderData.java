@@ -2,10 +2,13 @@ package com.increff.commons.Data;
 
 import com.increff.commons.Constants.OrderStatus;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
+
 @Getter
-@Service
+@Setter
 public class OrderData {
 
     private Long id;

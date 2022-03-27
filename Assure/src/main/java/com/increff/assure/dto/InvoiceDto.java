@@ -2,6 +2,7 @@ package com.increff.assure.dto;
 
 import com.increff.assure.pojo.*;
 import com.increff.assure.service.*;
+import com.increff.assure.spring.AssureAppProperties;
 import com.increff.commons.Constants.Invoice;
 import com.increff.commons.Constants.OrderStatus;
 import com.increff.commons.Data.InvoiceData;
@@ -35,6 +36,8 @@ public class InvoiceDto {
     private ChannelService channelService;
     @Autowired
     private InvoiceService service;
+    @Autowired
+    private ClientWrapper clientWrapper;
 
 
     //TODO change it based on invoice type
@@ -75,9 +78,7 @@ public class InvoiceDto {
         }
 
     public InvoiceResponse generateInvoiceInChannelApp(InvoiceData invoiceData){
-        System.out.println("channel-app");
-        String url = restTemplate.postForObject("http://localhost:9000/Channel-App/api/orders/invoice",
-                invoiceData, String.class);
+        String url = clientWrapper.postForInvoiceInChannelApp(invoiceData);
         InvoicePojo invoicePojo = convertToInvoicePojo(invoiceData.getOrderId(), url);
         return convertToInvoiceResponse(service.add(invoicePojo));
     }
