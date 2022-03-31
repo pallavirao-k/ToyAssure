@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
+import java.util.HashMap;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -27,7 +29,7 @@ import static com.increff.commons.Constants.ConstantNames.*;
 public class XmlUtil {
 
 
-    public static String generatePdf(InvoiceData invoiceData) throws Exception {
+    public static HashMap<String, byte[]> generatePdf(InvoiceData invoiceData) throws Exception {
         generateXml(new File(INVOICE_XML_PATH),
                 invoiceData, InvoiceData.class);
         return generatePDF(invoiceData.getOrderId(), new File(INVOICE_XML_PATH),
@@ -37,7 +39,7 @@ public class XmlUtil {
 
 
     //Generate PDF
-    public static String generatePDF(Long orderId, File xml_file, StreamSource xsl_source) throws Exception {
+    public static HashMap<String, byte[]> generatePDF(Long orderId, File xml_file, StreamSource xsl_source) throws Exception {
 
         String path = PDF_BASE_ADDRESS+orderId+".pdf";
         File pdfFile = new File(path);
@@ -65,7 +67,10 @@ public class XmlUtil {
         out.close();
         out.flush();
 
-        return path;
+        byte[] encodedBytes = Base64.getEncoder().encode(bytes);
+        HashMap<String, byte[]> hm = new HashMap<>();
+        hm.put(path, bytes);
+        return hm;
 
     }
 

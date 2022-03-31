@@ -2,6 +2,7 @@ package com.increff.assure.controller;
 
 import com.increff.assure.dto.OrderDto;
 import com.increff.commons.Data.OrderData;
+import com.increff.commons.Data.OrderDetailsData;
 import com.increff.commons.Data.OrderItemData;
 import com.increff.commons.Exception.ApiException;
 import com.increff.commons.Form.OrderSearchForm;
@@ -44,13 +45,13 @@ public class OrderController {
 
     @ApiOperation(value = "Gets Order Items By ID")
     @RequestMapping(path = "/order-items/{id}", method= RequestMethod.GET)
-    public List<OrderItemData> getOrderItems(@PathVariable Long id) throws ApiException {
+    public List<OrderDetailsData> getOrderItems(@PathVariable Long id) throws ApiException {
         return dto.getOrderItems(id);
     }
 
     @ApiOperation(value = "search order by Order ID")
     @RequestMapping(path = "/search/{orderId}", method= RequestMethod.GET)
-    public OrderData searchByOrderId(@PathVariable Long orderId) throws ApiException {
+    public List<OrderData> searchByOrderId(@PathVariable Long orderId) throws ApiException {
         return dto.searchByOrderId(orderId);
     }
 

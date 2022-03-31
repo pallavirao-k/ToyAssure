@@ -14,7 +14,9 @@ public class ConstantNames {
     public static final String SEQ_INVOICE="seq_invoice";
     public static final String DATE_TIME_FORMATTER = "yyyy-mm-dd hh:mm:ss";
     public static final String INVOICE_XML_PATH = "/Users/nikshan/Downloads/ToyAssure/Assure/invoice.xml";
+    public static final String CHANNEL_INVOICE_XML_PATH = "/Users/nikshan/Downloads/ToyAssure/Channel-App/invoice.xml";
     public static final String INVOICE_XSL_PATH = "/Users/nikshan/Downloads/ToyAssure/Assure/invoice.xsl";
+    public static final String CHANNEL_INVOICE_XSL_PATH = "/Users/nikshan/Downloads/ToyAssure/Channel-App/invoice.xsl";
     public static final String PDF_BASE_ADDRESS = "/Users/nikshan/Downloads/ToyAssure/Invoices/Invoice_order_id_";
     public static final Long SEQ_MIN_VAL = 0L;
     public static final Long SEQ_MAX_VAL = 5000L;

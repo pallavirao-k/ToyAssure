@@ -21,10 +21,10 @@ public class PartyService extends AbstarctService {
     private PartyDao dao;
 
 
-    public void add(PartyPojo p){
+    public void add(PartyPojo p) throws ApiException {
         PartyPojo exists = dao.selectByNameAndType(p.getPartyName(), p.getPartyType());
         if(Objects.nonNull(exists)) {
-            return;
+            throw new ApiException(p.getPartyType()+" with name: "+p.getPartyName()+" already exists");
         }
         dao.insert(p);
     }
@@ -45,7 +45,7 @@ public class PartyService extends AbstarctService {
 
     public PartyPojo getCheck(Long id) throws ApiException {
         PartyPojo p = dao.select(id);
-        if (Objects.isNull(p)) throw new ApiException("party with given id: "+ id+ " doesn't exist");
+        if (Objects.isNull(p)) throw new ApiException("Party with given id: "+ id+ " doesn't exist");
         return p;
     }
 

@@ -18,7 +18,7 @@ function addParty() {
 		success: function(data) {
 			$('#party-modal').modal('toggle');
 			$("#party-form").trigger("reset");
-			showSuccess("Customer added");
+			showSuccess("Success");
 			getPartyList();     //...
 		},
 		error: function(data) {
@@ -54,7 +54,7 @@ function displayPartyList(data) {
 	    if(e.partyType === 'CUSTOMER'){
 		//console.log(e);
 		var row = '<tr>'
-			+ '<td>' + c + '</td>'
+			+ '<td>' + e.partyId + '</td>'
 			+ '<td>' + e.partyName + '</td>'
 			+ '</tr>';
 		$tbody.append(row);
@@ -141,10 +141,21 @@ return json;
 
 }
 
-function init(){
-    	$('#add-party').click(addParty);
+function addCustomerFormValidation(){
+    var name = $('#inputPartyName').val();
+    if(name.length>255){
+    showError("Customer Name length should not exceed 255");
+    return false;
+    }
+    addParty();
 
 }
+
+function init(){
+    	$('#add-party').click(addCustomerFormValidation);
+
+}
+
 $(document).ready(init);
 $(document).ready(getPartyList);
 

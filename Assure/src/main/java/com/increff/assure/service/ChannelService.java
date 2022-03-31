@@ -26,7 +26,7 @@ public class ChannelService extends AbstarctService {
         normalize(p);
         ChannelPojo exists = dao.selectByName(p.getChannelName());
         if(Objects.nonNull(exists)) {
-            return exists;
+            throw new ApiException("Channel with Name: \""+p.getChannelName()+"\" already exists");
         }
         dao.insert(p);
         return p;

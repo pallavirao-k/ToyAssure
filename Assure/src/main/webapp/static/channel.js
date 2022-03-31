@@ -22,6 +22,12 @@ Papa.parse(document.getElementById('employeeFile').files[0],
     header:true,
     skipEmptyLines: true,
     complete: function(results){
+
+
+             if(results.data.length>5000){
+                showError("Error: CSV rows must be less than 5000");
+                return false;
+                }
             cId = $("#inputClientId").val();
             channel = $("#inputChannelId").val();
             const data = {clientId:cId, channelId:channel, channelListings:results.data};
@@ -72,7 +78,7 @@ function addEmployee(jsonData) {
 
 			$('#upload-channel-listing-modal').modal('toggle');
 			$("#upload-channel-listing-form").trigger("reset");
-			showSuccess("Channel Listings added");
+			showSuccess("Success");
 		},
 		error: function(data) {
 
@@ -101,7 +107,7 @@ function addChannel() {
 
 			$('#add-channel-modal').modal('toggle');
 			$("#channel-form").trigger("reset");
-			showSuccess("Channel added");
+			showSuccess("Success");
 			getEmployeeList();
 
 		},
@@ -136,7 +142,6 @@ function displayEmployeeList(data) {
 	for (var i in data) {
 		var e = data[i];
 		var row = '<tr>'
-			+ '<td>' + c + '</td>'
 			+ '<td>' + e.channelName + '</td>'
 			+ '<td>' + e.invoiceType + '</td>'
 			+ '</tr>';

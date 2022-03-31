@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.increff.assure.util.NormalizeUtil.*;
 import static com.increff.commons.Util.ConvertUtil.convert;
 import static com.increff.commons.Util.ValidationUtil.*;
 
@@ -37,6 +38,7 @@ public class ChannelListingDto extends AbstractDto {
         validateListing(form);
         checkClient(form.getClientId());
         checkChannel(form.getChannelId());
+        normalizeChannelListingForm(form.getChannelListings());
         checkClientSkuIds(form.getClientId(), form.getChannelListings());
         checkCombinationUnique(form.getClientId(), form.getChannelId(), form.getChannelListings());
 
@@ -102,8 +104,9 @@ public class ChannelListingDto extends AbstractDto {
         List<String> channelSkuIds = uploadChannelListingForm.getChannelListings().stream()
                 .map(ChannelListingForm::getChannelSkuId).collect(Collectors.toList());
         validateEmptyFields(clientSkuIds, "Client SKU ID(s)");
-        validateEmptyFields(channelSkuIds, "Channel SKU IS(s)");
+        validateEmptyFields(channelSkuIds, "Channel SKU ID(s)");
         checkDuplicates(channelSkuIds, "Channel SKU ID(s)");
+        checkDuplicates(clientSkuIds, "Client SKU ID(s)");
     }
 
 }

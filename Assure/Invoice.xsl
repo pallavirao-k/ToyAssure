@@ -22,7 +22,7 @@
 
 							<fo:table-body>
 								<fo:table-row font-size="18pt" line-height="30px"
-									background-color="#3e73b9" color="white">
+									background-color="gray" color="black">
 
 									<fo:table-cell>
 										<fo:block text-align="center" padding-right="6pt">
@@ -35,27 +35,66 @@
 
 					</fo:block>
 					<fo:table>
-						<fo:table-column column-width="50%" />
-						<fo:table-column column-width="50%" />
+						<fo:table-column column-width="50%"/>
+						<fo:table-column column-width="50%"/>
 						<fo:table-body>
 							<fo:table-row>
 								<fo:table-cell>
-									<fo:block padding-top="15pt" padding-bottom="20pt" font-size="10pt"
+									<fo:block padding-top="15pt" padding-bottom="2pt" font-size="10pt"
 										font-family="Helvetica" color="black" font-weight="bold"
 										space-after="5mm">
 										Order Id:
 										<xsl:value-of select="orderId" />
 									</fo:block>
 
+
 								</fo:table-cell>
+
 								<fo:table-cell>
-									<fo:block padding-top="15pt" padding-bottom="20pt" font-size="10pt" font-family="Helvetica"
+									<fo:block padding-top="15pt" padding-bottom="2pt" font-size="10pt" font-family="Helvetica"
 										color="black" font-weight="bold" space-after="5mm" text-align="right">
 										Date and Time:
 										<xsl:value-of select="dateTime" />
 									</fo:block>
 								</fo:table-cell>
 							</fo:table-row>
+
+							<fo:table-row >
+							    <fo:table-cell>
+                                    <fo:block padding-top="2pt" padding-bottom="2pt" font-size="10pt"
+                                        font-family="Helvetica" color="black" font-weight="bold"
+                                        space-after="5mm">
+                                        Customer:
+                                        <xsl:value-of select="customerName" />
+                                    </fo:block>
+
+                            </fo:table-cell>
+
+                             <fo:table-cell>
+                                 <fo:block padding-top="2pt" padding-bottom="2pt" font-size="10pt"
+                                        font-family="Helvetica" color="black" font-weight="bold"
+                                        space-after="5mm" text-align="right">
+                                        Client:
+                                    <xsl:value-of select="clientName" />
+                                </fo:block>
+
+                             </fo:table-cell>
+
+							</fo:table-row>
+
+							<fo:table-row>
+							<fo:table-cell>
+                                <fo:block padding-top="2pt" padding-bottom="10pt" font-size="10pt"
+                                font-family="Helvetica" color="black" font-weight="bold"
+                                space-after="5mm">
+                                Channel:
+                                <xsl:value-of select="channelName" />
+                                </fo:block>
+
+                                </fo:table-cell>
+
+							</fo:table-row>
+
 
 						</fo:table-body>
 					</fo:table>
@@ -65,10 +104,11 @@
 						<fo:table table-layout="fixed" width="80%"
 							border-collapse="separate" margin-left="15pt">
 							<!-- <fo:table-column column-width="2cm" />-->
-							<fo:table-column column-width="5cm" />
-							<fo:table-column column-width="5cm" />
 							<fo:table-column column-width="4cm" />
 							<fo:table-column column-width="4cm" />
+							<fo:table-column column-width="4cm" />
+							<fo:table-column column-width="3cm" />
+							<fo:table-column column-width="3cm" />
 							<fo:table-header>
 								<!-- <fo:table-cell
 									xsl:use-attribute-sets="tableBorder">
@@ -79,16 +119,20 @@
 									<fo:block font-weight="bold" text-align="center">Name</fo:block>
 								</fo:table-cell>
 								<fo:table-cell
+                                	xsl:use-attribute-sets="tableBorder">
+                                	<fo:block font-weight="bold" text-align="center">Client Sku ID</fo:block>
+                                	</fo:table-cell>
+								<fo:table-cell
 									xsl:use-attribute-sets="tableBorder">
 									<fo:block font-weight="bold" text-align="center">Ordered Quantity</fo:block>
 								</fo:table-cell>
 									<fo:table-cell
 									xsl:use-attribute-sets="tableBorder">
-									<fo:block font-weight="bold" text-align="right">Selling Price</fo:block>
+									<fo:block font-weight="bold" text-align="right">Unit Price (Rs.)</fo:block>
 								</fo:table-cell>
 								<fo:table-cell
 									xsl:use-attribute-sets="tableBorder">
-									<fo:block font-weight="bold" text-align="right">Sub Total</fo:block>
+									<fo:block font-weight="bold" text-align="right">Amount (Rs.)</fo:block>
 								</fo:table-cell>
 							</fo:table-header>
 							<fo:table-body>
@@ -96,8 +140,8 @@
 							</fo:table-body>
 						</fo:table>
 					</fo:block>
-					<fo:block font-size="16pt" font-family="Helvetica"
-						color="black" font-weight="bold" padding-top="10pt" text-align="right" space-after="5mm">
+					<fo:block font-size="10pt" font-family="Helvetica"
+						color="black" font-weight="bold" padding-top="2pt" padding-right="15pt" text-align="right" space-after="5mm">
 						Total: Rs.
 						<xsl:value-of select="format-number(total, '#.00')" />
 					</fo:block>
@@ -118,6 +162,11 @@
 					<xsl:value-of select="productName" />
 				</fo:block>
 			</fo:table-cell>
+			<fo:table-cell xsl:use-attribute-sets="tableBorder">
+            	<fo:block text-align="center">
+            		<xsl:value-of select="clientSkuId" />
+            	</fo:block>
+            </fo:table-cell>
 			<fo:table-cell xsl:use-attribute-sets="tableBorder">
 					<fo:block text-align="center">
 					<xsl:value-of select="quantity" />

@@ -19,9 +19,13 @@ Papa.parse(document.getElementById('employeeFile').files[0],
     header:true,
     skipEmptyLines: true,
     complete: function(results){
+
+            if(results.data.length>5000){
+            showError("Error: CSV rows must be less than 5000");
+            return false;
+            }
             cId = $("#inputClientId").val();
             const data = {clientId:cId, formList:results.data};
-            console.log(data);
             var jsonData = JSON.stringify(data);
             addEmployee(jsonData);
     }
@@ -45,7 +49,6 @@ function addEmployee(jsonData) {
 			$('#brand-modal').modal('toggle');
 			$("#product-form").trigger("reset");
 			showSuccess("Product added");
-			getEmployeeList();     //...
 		},
 		error: function(data) {
 		    var response = JSON.parse(data.responseText);
@@ -120,13 +123,12 @@ function displayEmployeeList(data) {
 		var e = data[i];
         var buttonHtml = ' <button type="button" class="btn btn-outline-primary border-0" data-toggle="tooltip" title="Edit" onclick="displayEditEmployee(' + e.globalSkuId + ')"><i class="bi bi-pencil-fill"></i></button>';
 		var row = '<tr>'
-			+ '<td>' + c + '</td>'
 			+ '<td>' + e.productName + '</td>'
 			+ '<td>' + e.clientId + '</td>'
 			+ '<td>' + e.clientSkuId + '</td>'
 			+ '<td>' + e.brandId + '</td>'
 			+ '<td>' + e.productMrp + '</td>'
-			+ '<td>' + e.description + '</td>'
+			+ '<td><div style=" width:100px; word-wrap: break-word">' + e.description + '</div></td>'
 			+ '<td>' + buttonHtml + '</td>'
 			+ '</tr>';
 		$tbody.append(row);
@@ -151,6 +153,8 @@ function displayEditEmployee(id) {
 }
 
 function displayEmployee(data) {
+    var span = document.getElementById("spanB");
+    span.innerHTML = "Client SKU ID: " + data.clientSkuId;
 	$("#product-edit-form input[name=productName]").val(data.productName);
 	$("#product-edit-form input[name=brandId]").val(data.brandId);
 	$("#product-edit-form input[name=description]").val(data.description);
@@ -274,12 +278,7 @@ function dropdown1(){
 		select.appendChild(opt);
 		}
 	}
-	var opt = document.createElement('option');
-        		opt.value = null;
-        		opt.innerHTML = 'None';
-        		select.appendChild(opt);
-
-	   },
+},
 	   error: function(){
 	   		showError("An error has occurred");
 	   }
@@ -288,33 +287,3 @@ function dropdown1(){
 
 }
 
-function dropdown2(){
-
-	var url = getEmployeeUrl();
-	$.ajax({
-	   url: url,
-	   type: 'GET',
-	   success: function(data) {
-		var select = document.getElementById('inputClientSkuIdSearch');
-		for(var i in data){
-		var e = data[i];
-		var opt = document.createElement('option');
-		opt.value = e.clientSkuId;
-		opt.innerHTML = e.clientSkuId;
-		select.appendChild(opt);
-	}
-	var opt = document.createElement('option');
-    		opt.value = "";
-    		opt.innerHTML = "None";
-    		select.appendChild(opt);
-
-
-
-	   },
-	   error: function(){
-	   		showError("An error has occurred");
-	   }
-	});
-
-
-}

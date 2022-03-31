@@ -65,9 +65,8 @@ public class InventoryService {
 
     public void updateAvailableQty(Long id, Long qty) throws ApiException {
         InventoryPojo ip = dao.select(id);
-        if(ip.getAllocatedQty()>ip.getAvailableQty()+qty){
-            throw new ApiException("Available quantity cannot be less than Allocated quantity");
-        }
+        ip.setAllocatedQty(0L);
+        ip.setFulfilledQty(0L);
         ip.setAvailableQty(ip.getAvailableQty()+qty);
 
     }

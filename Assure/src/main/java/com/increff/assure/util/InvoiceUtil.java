@@ -2,30 +2,23 @@ package com.increff.assure.util;
 
 import com.increff.assure.pojo.InvoicePojo;
 import com.increff.assure.pojo.OrderItemPojo;
+import com.increff.assure.pojo.OrderPojo;
 import com.increff.assure.pojo.ProductPojo;
-import com.increff.commons.Data.InvoiceData;
-import com.increff.commons.Data.InvoiceProductData;
-import com.increff.commons.Data.InvoiceResponse;
+import com.increff.commons.Data.*;
 import com.increff.commons.Util.ConvertUtil;
 import com.increff.commons.Util.XmlUtil;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
-
-import javax.xml.transform.stream.StreamSource;
-import java.io.File;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.increff.commons.Constants.ConstantNames.*;
 import static com.increff.commons.Util.ConvertUtil.convert;
-import static com.increff.commons.Util.RestTemplateUtil.postRequest;
 
 public class InvoiceUtil {
 
-    public static InvoiceData convertToInvoiceData(List<OrderItemPojo> orderItemPojos,
-                                                   Map<Long, ProductPojo> globalSkuToProduct) throws Exception {
+    public static InvoiceData convertToInvoiceData(String channelName, String clientName, String customerName,
+                                                   List<OrderItemPojo> orderItemPojos, Map<Long,
+            ProductPojo> globalSkuToProduct) throws Exception {
         List<InvoiceProductData> invoiceProductDataList = new ArrayList<>();
 
         Double total = 0D;
@@ -33,6 +26,7 @@ public class InvoiceUtil {
             ProductPojo p = globalSkuToProduct.get(oip.getGlobalSkuId());
             InvoiceProductData ipd = ConvertUtil.convert(p, InvoiceProductData.class);
             ipd.setQty(oip.getOrderedQty());
+            ipd.setClientSkuId(p.getClientSkuId());
             ipd.setSellingPricePerUnit(oip.getSellingPricePerUnit());
             invoiceProductDataList.add(ipd);
             total+=oip.getSellingPricePerUnit()*oip.getOrderedQty();
@@ -40,8 +34,38 @@ public class InvoiceUtil {
 
         InvoiceData invoiceData = new InvoiceData();
         invoiceData.setOrderId(orderItemPojos.get(0).getOrderId());
+        invoiceData.setChannelName(channelName);
+        invoiceData.setClientName(clientName);
+        invoiceData.setCustomerName(customerName);
         invoiceData.setGeneratedDateTime(XmlUtil.getDateTime());
         invoiceData.setInvoiceProductDataList(invoiceProductDataList);
+        invoiceData.setTotal(total);
+        return invoiceData;
+    }
+
+    public static ChannelInvoiceData convertToChannelInvoiceData(String channelName, String clientName, String customerName,
+                                                   List<OrderItemPojo> orderItemPojos, Map<Long,
+            ProductPojo> globalSkuToProduct, Map<Long, String> globalSkuToChannelSku) throws Exception {
+        List<ChannelInvoiceProductData> channelInvoiceProductDataList = new ArrayList<>();
+
+        Double total = 0D;
+        for(OrderItemPojo oip: orderItemPojos){
+            ProductPojo p = globalSkuToProduct.get(oip.getGlobalSkuId());
+            ChannelInvoiceProductData ipd = ConvertUtil.convert(p, ChannelInvoiceProductData.class);
+            ipd.setQty(oip.getOrderedQty());
+            ipd.setChannelSkuId(globalSkuToChannelSku.get(oip.getGlobalSkuId()));
+            ipd.setSellingPricePerUnit(oip.getSellingPricePerUnit());
+            channelInvoiceProductDataList.add(ipd);
+            total+=oip.getSellingPricePerUnit()*oip.getOrderedQty();
+        }
+
+        ChannelInvoiceData invoiceData = new ChannelInvoiceData();
+        invoiceData.setOrderId(orderItemPojos.get(0).getOrderId());
+        invoiceData.setChannelName(channelName);
+        invoiceData.setClientName(clientName);
+        invoiceData.setCustomerName(customerName);
+        invoiceData.setGeneratedDateTime(XmlUtil.getDateTime());
+        invoiceData.setProductDataList(channelInvoiceProductDataList);
         invoiceData.setTotal(total);
         return invoiceData;
     }
@@ -57,7 +81,6 @@ public class InvoiceUtil {
         InvoiceResponse invoiceResponse = new InvoiceResponse();
         invoiceResponse.setId(invoicePojo.getId());
         invoiceResponse.setOrderId(invoicePojo.getOrderId());
-        invoiceResponse.setInvoiceUrl(invoicePojo.getInvoiceUrl());
         return  invoiceResponse;
     }
 

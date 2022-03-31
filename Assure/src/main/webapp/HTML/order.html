@@ -15,16 +15,31 @@
 
 </header>
 
+<div class="container-fluid" style="position:absolute; width:100%;">
+    <label for="searchType" class="col-sm-2 col-form-label" style="position: absolute; top: 21%; right: 11%;">
+        Search By:</label>
+    <select class="selection"id="searchType" name="search-type"
+            style="position: absolute; top: 21%; right:7%; width:100px;">
+        <option id = "order" value="1">Order ID</option>
+        <option id = "other" value="2">Other</option>
+    </select>
+    <button type="button" class="btn btn-sm btn-outline-secondary mx-1" id = "change"
+            style="position: absolute; top: 21%; right:3%;">
+        Go</button>
+
+</div>
+
 
 
 <div class="container-fluid px-5 mt-1 pt-3">
-    <div>
+
+
+    <div style="width:1500px;">
         <h2 class="my-3">Order</h2>
-        <div  style="right:20px;" >
-            <button type="button" class="btn btn-sm btn-outline-primary mx-1"
-                    data-toggle="modal" data-target="#upload-order-modal">
-                Upload Order</button>
-        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary mx-1"
+                data-toggle="modal" data-target="#upload-order-modal" >
+            Upload Order</button>
+
     </div>
     <br>
     <div class="row">
@@ -100,6 +115,26 @@
                         onclick="location.reload()">Refresh</button>
 
             </form>
+
+            <form>
+                <div id="select-by-orderId" style="display:none;">
+                <div class="col">
+                    <label for="inputOrderIdSearch" class="col-sm-2 col-form-label">OrderID</label>
+                    <div class="col">
+                        <input type="text" class="form-control" name="OrderId"
+                               id="inputOrderIdSearch" placeholder="Order Id" style="width:250px;">
+                    </div>
+                </div>
+                    <br>
+                    <button type="button" class="btn btn-sm btn-outline-primary mr-2"
+                            id="search-orders2">Search</button>
+                    <button type="button" class="btn btn-sm btn-outline-dark mx-1"
+                            onclick="location.reload()">Refresh</button>
+
+                </div>
+            </form>
+
+
             <br> <br>
         </div>
     </div>
@@ -113,6 +148,7 @@
                     <th scope="col">Customer ID</th>
                     <th scope="col">Channel ID</th>
                     <th scope="col">Channel Order ID</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Options</th>
 
                 </tr>
@@ -120,6 +156,19 @@
                 <tbody>
 
                 </tbody>
+                <tfoot>
+                <tr>
+                    <th scope="col">Client ID</th>
+                    <th scope="col">Customer ID</th>
+                    <th scope="col">Channel ID</th>
+                    <th scope="col">Channel Order ID</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Options</th>
+
+                </tr>
+                </tfoot>
+
+
             </table>
 
 
@@ -127,7 +176,7 @@
     </div>
 
 
-    <div class="modal" id="order-item-modal" >
+    <div class="modal" id="order-item-modal" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
 
@@ -145,12 +194,11 @@
                             <table class="table table-striped" id="order-item-table">
                                 <thead>
                                 <tr>
-                                    <th scope="col">Product Name</th>
-                                    <th scope="col">Brand</th>
+                                    <th scope="col">Client SKU ID</th>
                                     <th scope="col">Ordered Quantity</th>
+                                    <th scope="col">Allocated Quantity</th>
                                     <th scope="col">Fulfilled Quantity</th>
-                                    <th scope="col">Unit Price</th>
-                                    <th scope="col">Amount</th>
+                                    <th scope="col">SellingPricePerUnit</th>
 
 
                                 </tr>
@@ -158,6 +206,8 @@
                                 <tbody>
 
                                 </tbody>
+
+
                             </table>
 
 
@@ -176,7 +226,7 @@
 
     <!-- Employee Edit Modal -->
     <div class="modal" tabindex="-1" role="dialog"
-         id="upload-order-modal">
+         id="upload-order-modal" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
 
@@ -219,7 +269,7 @@
 
 
 
-                    <a th:href="@{/sample/product_sample.tsv}" target="_blank">Download
+                    <a th:href="@{/ToyAssureCSV/orderCSV.csv}" target="_blank">Download
                         Sample</a>
                     <div id="row-box" style="display: none;">
                         <br> Rows: <span id="rowCount">0</span>, Processed: <span

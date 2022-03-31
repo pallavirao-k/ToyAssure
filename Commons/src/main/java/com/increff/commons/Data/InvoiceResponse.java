@@ -10,4 +10,5 @@ public class InvoiceResponse {
     private Long id;
     private Long orderId;
     private String invoiceUrl;
+    private byte[] b64Data;
 }

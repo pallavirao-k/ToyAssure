@@ -15,10 +15,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.increff.assure.util.NormalizeUtil.normalize;
 import static com.increff.commons.Util.ConvertUtil.convert;
+import static com.increff.commons.Util.ValidationUtil.checkDuplicates;
 
 @Service
 public class ProductDto extends AbstractDto {
@@ -30,20 +32,19 @@ public class ProductDto extends AbstractDto {
 
     public void add(UploadProductForm uploadProductForm) throws ApiException{
         formValidation(uploadProductForm);
-        validateProductName(uploadProductForm.getFormList());
-        validateBrandId(uploadProductForm.getFormList());
-        validateProductDesc(uploadProductForm.getFormList());
+        normalize(uploadProductForm.getFormList());
+        validateUploadProductForm(uploadProductForm);
+
         List<ProductPojo> productPojoList = convert(uploadProductForm.getFormList(), ProductPojo.class);
         checkClient(uploadProductForm.getClientId(), productPojoList);
-        normalize(productPojoList);
         service.add(uploadProductForm.getClientId(), productPojoList);
     }
 
     public void update(Long id, UpdateProductForm form) throws ApiException{
         formValidation(form);
+        normalize(form);
         checkForm(form);
         ProductPojo p = convert(form, ProductPojo.class);
-        normalize(p);
         service.update(id, p);
     }
 
@@ -84,6 +85,9 @@ public class ProductDto extends AbstractDto {
         else if(form.getDescription().trim().isEmpty()){
             throw new ApiException("Product description must not be empty");
         }
+        else if(form.getDescription().length()>255){
+            throw new ApiException("Length exceeds 255 characters of Product description");
+        }
     }
 
     private void validateProductName(List<ProductForm> formList) throws ApiException {
@@ -123,16 +127,63 @@ public class ProductDto extends AbstractDto {
 
     private void validateProductDesc(List<ProductForm> formList) throws ApiException {
         List<Long> indexes = new ArrayList<>();
+        List<Long> indexes2 = new ArrayList<>();
         Long index=1L;
         for(ProductForm form: formList){
             if(form.getDescription().trim().isEmpty()){
                 indexes.add(index);
                 index++;
+                continue;
             }
+            if(form.getDescription().length()>255){
+                indexes2.add(index);
+                index++;
+            }
+
         }
         if(indexes.size()>0){
             throw new ApiException(ErrorData.convert("Product Description(s) of these rows are blank", indexes));
         }
+        if(indexes2.size()>0){
+            throw new ApiException(ErrorData.convert("Length exceeds 255 of Product Description(s)", indexes));
+        }
+    }
+
+    private void validateClientSkuId(List<ProductForm> formList) throws ApiException {
+        List<Long> indexes = new ArrayList<>();
+        Long index=1L;
+        for(ProductForm form: formList){
+            if(form.getClientSkuId().trim().isEmpty()){
+                indexes.add(index);
+                index++;
+            }
+        }
+        if(indexes.size()>0){
+            throw new ApiException(ErrorData.convert("Client SKU ID(s) of these rows are blank", indexes));
+        }
+    }
+
+
+
+    public void validateUploadProductForm(UploadProductForm uploadProductForm) throws ApiException {
+        validateProductName(uploadProductForm.getFormList());
+        validateBrandId(uploadProductForm.getFormList());
+        validateProductDesc(uploadProductForm.getFormList());
+        validateClientSkuId(uploadProductForm.getFormList());
+        List<String> clientSkuIds = uploadProductForm.getFormList().stream().map(ProductForm::getClientSkuId)
+                .collect(Collectors.toList());
+        checkDuplicates(clientSkuIds, "Client SKU ID(s)");
+        getCheckClientSkuId(uploadProductForm.getClientId(), clientSkuIds);
+    }
+
+    private void getCheckClientSkuId(Long clientId, List<String> clientSkuIds) throws ApiException {
+        List<ProductPojo> pojoList = service.getByClientSkuIdsAndClientId(clientId, clientSkuIds);
+        List<String> finalClientSkuIds = pojoList.stream().map(ProductPojo::getClientSkuId).collect(Collectors.toList());
+
+        if(finalClientSkuIds.size()>0){
+            throw new ApiException(ErrorData.convert("Client SKU ID(s) already exist", finalClientSkuIds));
+        }
+
     }
 
 

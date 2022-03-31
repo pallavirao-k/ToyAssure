@@ -28,7 +28,7 @@ public class AbstractDto {
         Iterator<ConstraintViolation<T>> itErrors = errors.iterator();
         if(itErrors.hasNext()) {
             ConstraintViolation<T> violation = itErrors.next();
-            throw new ApiException("Constraint Violation " + violation.getPropertyPath() + " " + violation.getMessage());
+            throw new ApiException(violation.getPropertyPath() + " " + violation.getMessage());
         }
     }
 

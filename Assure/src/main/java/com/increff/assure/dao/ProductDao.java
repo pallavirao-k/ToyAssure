@@ -6,9 +6,11 @@ import com.increff.commons.Constants.Party;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.NoResultException;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +22,9 @@ public class ProductDao extends GenericDao<ProductPojo> {
     private static final String SELECT_BY_CLIENT_ID_AND_CLIENT_SKU_IDS = "select p from ProductPojo p where clientId =: clientId AND clientSkuId IN (:clientSkuIds)";
     private static final String SELECT_BY_GLOBAL_SKU_IDS = "select p from ProductPojo p where globalSkuId IN (:globalSkuIds)";
     private static final String SELECT_BY_CLIENT_ID = "select p from ProductPojo p where clientId =: clientId";
-    private static String SELECT_BY_CLIENT_ID_OR_CLIENT_SKUID = "select p from ProductPojo p "
-            + "where (clientId = :clientId OR :clientId IS NULL)  AND "
-            + "(clientSkuId = :clientSkuId OR :clientSkuId IS NULL)";
+//    private static String SELECT_BY_CLIENT_ID_OR_CLIENT_SKUID = "select p from ProductPojo p "
+//            + "where (clientId = :clientId OR :clientId IS NULL)  AND "
+//            + "(clientSkuId = :clientSkuId OR :clientSkuId IS NULL)";
 
     public ProductPojo selectByClientSkuIdAndClientId(String clientSkuId, Long clientId){
         ProductPojo p;
@@ -76,15 +78,29 @@ public class ProductDao extends GenericDao<ProductPojo> {
     }
 
     public List<ProductPojo> search(Long clientId, String clientSkuId){
-        List<ProductPojo> bsp;
-        try {
-            TypedQuery<ProductPojo> q = getQuery(SELECT_BY_CLIENT_ID_OR_CLIENT_SKUID, ProductPojo.class);
-            q.setParameter("clientId", clientId);
-            q.setParameter("clientSkuId", clientSkuId);
-            bsp = q.getResultList();
-        }catch (NoResultException e){
-            bsp = new ArrayList<>();
+        List<ProductPojo> bsp = new ArrayList<>();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<ProductPojo> cq = cb.createQuery(ProductPojo.class);
+
+        Root<ProductPojo> root = cq.from(ProductPojo.class);
+        List<Predicate> predicates = new ArrayList<>();
+
+
+        if (clientId == null) {
+            predicates.add(cb.equal(root.get("clientSkuId"), clientSkuId));
+        }else {
+            if (clientSkuId == null) {
+                predicates.add(cb.equal(root.get("clientId"), clientId));
+            }else {
+                predicates.add(cb.equal(root.get("clientSkuId"), clientSkuId));
+                predicates.add(cb.equal(root.get("clientId"), clientId));
+
+            }
         }
+        cq.where(predicates.toArray(new Predicate[0]));
+        Query query=em.createQuery(cq);
+        bsp = query.getResultList();
         return bsp;
     }
 

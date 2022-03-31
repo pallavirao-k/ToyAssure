@@ -19,6 +19,8 @@ import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.increff.assure.util.NormalizeUtil.normalizeClientSkus;
+import static com.increff.assure.util.NormalizeUtil.normalizeUploadBinSkuForm;
 import static com.increff.commons.Util.ConvertUtil.convert;
 import static com.increff.commons.Util.ValidationUtil.checkLimit;
 
@@ -48,6 +50,7 @@ public class BinDto extends AbstractDto {
     public void uploadBinSku(UploadBinSkuForm uploadBinSkuForm) throws ApiException {
         validateClient(uploadBinSkuForm.getClientId());
         formValidation(uploadBinSkuForm);
+        normalizeUploadBinSkuForm(uploadBinSkuForm.getFormList());
         checkBinIds(uploadBinSkuForm.getFormList());
         validateClientSkuId(uploadBinSkuForm.getFormList());
         validateBinAndClientSku(uploadBinSkuForm.getFormList());
@@ -157,7 +160,7 @@ public class BinDto extends AbstractDto {
             }
             indexes.add(index++);
             if(indexes.size()>0){
-                throw new ApiException(ErrorData.convert("Duplicate Bin ID(s) and Client SKU ID(s) at indexes: ", indexes));
+                throw new ApiException(ErrorData.convert("Duplicate Combination of Bin ID(s) and Client SKU ID(s) at indexes: ", indexes));
             }
 
         }

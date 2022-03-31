@@ -28,6 +28,11 @@ Papa.parse(document.getElementById('employeeFile').files[0],
     header:true,
     skipEmptyLines: true,
     complete: function(results){
+            if(results.data.length>5000){
+                showError("Error: CSV rows must be less than 5000");
+                return false;
+            }
+
             cId = $("#inputClientId").val();
             cuId = $("#inputCustomerId").val();
             cOID = $("#inputChannelOrderId").val();
@@ -90,6 +95,27 @@ function searchOrder(event) {
 	return false;
 }
 
+function searchOrder2(event) {
+	var id = $("#inputOrderIdSearch").val();
+	var url = getOrderUrl()+"/search/"+id;
+
+	$.ajax({
+		url: url,
+		type: 'GET',
+		success: function(data) {
+		    console.log(data);
+			showSuccess("Success");
+            displayEmployeeList(data);
+		},
+		error: function(data, textStatus, xhr) {
+			showError("Error: " + data.responseText);
+		}
+	});
+
+	return false;
+}
+
+
 function displayEmployeeList(data) {
 	var $tbody = $('#order-table').find('tbody');
 	$tbody.empty();
@@ -103,7 +129,7 @@ function displayEmployeeList(data) {
 		    buttonHtml+= ' <button type="button" class="btn btn-outline-primary border-0" data-toggle="tooltip" title="Generate Invoice" onclick="getInvoice(' + e.id + ')">Generate Invoice</button>';
 		}
 		else{
-		    buttonHtml+= ' <button type="button" class="btn btn-outline-primary border-0" data-toggle="tooltip" title="Get Invoice" onclick="getInvoice(' + e.id + ')">Get Invoice</button>';
+		    buttonHtml+= ' <button type="button" class="btn btn-outline-primary border-0" data-toggle="tooltip" title="Get Invoice" onclick="getInvoice(' + e.id + ')">Download Invoice</button>';
 		}
 
 		var row = '<tr>'
@@ -111,6 +137,7 @@ function displayEmployeeList(data) {
 			+ '<td>' + e.customerId + '</td>'
 			+ '<td>' + e.channelId + '</td>'
 			+ '<td>' + e.channelOrderId + '</td>'
+			+ '<td>' + e.orderStatus + '</td>'
 			+ '<td>' + buttonHtml + '</td>'
 			+ '</tr>';
 		$tbody.append(row);
@@ -141,8 +168,9 @@ function getInvoice(id){
         	   url: url,
         	   type: 'GET',
         	   success: function(data) {
+        	        showPdf(data);
         	        searchOrder();
-        	   		     //...
+
         	   },
         	   error: function(data){
         	   		 var response = JSON.parse(data.responseText);
@@ -152,39 +180,29 @@ function getInvoice(id){
         }
 
 
-
 function displayOrderItemList(data){
 	//console.log('Printing orderitem data');
 	var $tbody = $('#order-item-table').find('tbody');
 	$tbody.empty();
 	for(var i in data){
 		var e = data[i];
-		var url = getProductUrl()+"/"+e.globalSkuId;
-              $.ajax({
-              url: url,
-              type: 'GET',
-              success: function(successData) {
-                    var row = '<tr>'
-                    		+ '<td>' + successData.productName + '</td>'
-                    		+ '<td>' + successData.brandId + '</td>'
-                    		+ '<td>' + e.orderedQty + '</td>'
-                    		+ '<td>' + e.fulfilledQty + '</td>'
-                    		+ '<td>' + e.sellingPricePerUnit + '</td>'
-                    		+ '<td>' + e.sellingPricePerUnit*e.fulfilledQty + '</td>'
-                    		+ '</tr>';
-                            $tbody.append(row);
 
-              },
-              error: function(errorData){
-                var response = JSON.parse(errorData.responseText);
-                 showError("Error: " + response.message);
-                 }
-             });
-	}
+         var row = '<tr>'
+                         + '<td>' + e.clientSkuId + '</td>'
+                          +'<td>' + e.orderedQty + '</td>'
+                          + '<td>' + e.allocatedQty + '</td>'
+                          + '<td>' + e.fulfilledQty + '</td>'
+                           + '<td>' + e.sellingPricePerUnit + '</td>'
+                            + '</tr>';
+                            $tbody.append(row);
+}
 	var span = document.getElementById("spanB");
     span.innerHTML = "Order ID: " + data[0].orderId;
 	$('#order-item-modal').modal('toggle');
 }
+
+
+
 
 function allocateOrder(id){
         var url = getOrderUrl()+"/allocate?id="+id;
@@ -262,13 +280,65 @@ function showSuccess(msg) {
 
 }
 
+function showPdf(data) {
+    var fileName = 'Invoice_order_id_'+data.orderId;
+    var contentType = "application/pdf";
+     const blob = b64toBlob(data.b64Data, contentType);
+    const blobUrl = URL.createObjectURL(blob);
+
+                var isIE = false || !!document.documentMode;
+                if (isIE) {
+                    window.navigator.msSaveBlob(blob, fileName);
+                } else {
+                    var url = window.URL || window.webkitURL;
+                    link = blobUrl;
+                    var a = document.createElement("a");
+                    a.setAttribute("download", fileName);
+                    a.setAttribute("href", link);
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+  }
+
+const b64toBlob = (b64Data, contentType = '', sliceSize = 512) => {
+    const byteCharacters = atob(b64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize)
+       {
+        const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+}
 
 
 
+function validateOrderIdField(){
+    var orderId = document.getElementById("inputOrderIdSearch").value;
+    if(orderId.length==0){
+        showError("Order Id must not be empty");
+        return false;
+    }
+    searchOrder2();
+}
+var globalData;
 function init(){
     	csv2Json();
+    	globalData = [];
     	$('#search-orders').click(searchOrder);
-
+    	$('#search-orders2').click(validateOrderIdField);
+        $('#change').click(change);
 }
 $(document).ready(init);
 $(document).ready(show);
@@ -341,3 +411,46 @@ function dropdown2(){
 
 
 }
+
+function change() {
+
+          if($('#searchType').val() == 1){
+          document.getElementById("select-by-orderId").style.display="block";
+          document.getElementById("order-search-form").style.display="none";
+          }
+          if($('#searchType').val() == 2){
+          document.getElementById("select-by-orderId").style.display="none";
+          document.getElementById("order-search-form").style.display="block";
+          }
+
+ }
+
+function DownloadFile(fileUrl) {
+            //Set the File URL.
+
+            //Create XMLHTTP Request.
+            const fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+            var req = new XMLHttpRequest();
+            req.open("GET", fileUrl, true);
+            req.responseType = "blob";
+            req.onload = function () {
+                //Convert the Byte Data to BLOB object.
+                var blob = new Blob([req.response], { type: "application/pdf" });
+
+                //Check the Browser type and download the File.
+                var isIE = false || !!document.documentMode;
+                if (isIE) {
+                    window.navigator.msSaveBlob(blob, fileName);
+                } else {
+                    var url = window.URL || window.webkitURL;
+                    link = URL.createObjectURL(blob);
+                    var a = document.createElement("a");
+                    a.setAttribute("download", fileName);
+                    a.setAttribute("href", link);
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+            };
+            req.send();
+        };

@@ -17,6 +17,12 @@ public class InvoiceData {
 
     @XmlElement(name="orderId")
     private Long orderId;
+    @XmlElement(name="channelName")
+    private String channelName;
+    @XmlElement(name="clientName")
+    private String clientName;
+    @XmlElement(name="customerName")
+    private String customerName;
     @XmlElement(name="dateTime")
     private String GeneratedDateTime;
     @XmlElement(name="total")

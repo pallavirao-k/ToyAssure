@@ -6,6 +6,7 @@ import com.increff.assure.spring.OrderSearchProperties;
 import com.increff.commons.Constants.OrderStatus;
 import com.increff.commons.Data.ErrorData;
 import com.increff.commons.Data.OrderData;
+import com.increff.commons.Data.OrderDetailsData;
 import com.increff.commons.Data.OrderItemData;
 import com.increff.commons.Exception.ApiException;
 import com.increff.commons.Form.*;
@@ -18,6 +19,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.increff.assure.util.NormalizeUtil.normalizeClientSkus;
+import static com.increff.assure.util.NormalizeUtil.normalizeOrderItemWithClientSkuIdForm;
 import static com.increff.commons.Util.ConvertUtil.convert;
 import static com.increff.commons.Util.ValidationUtil.*;
 
@@ -42,7 +45,9 @@ public class OrderDto extends AbstractDto {
 
     public OrderData addOrderUsingClientSkuIds(OrderWithClientSkuIdForm orderWithClientSkuIdForm) throws ApiException{
         validateUploadOrderForm(orderWithClientSkuIdForm);
-        checkClientIdAndCustomerId(orderWithClientSkuIdForm.getClientId(), orderWithClientSkuIdForm.getCustomerId());
+        checkClientIdAndCustomerIdAndChannelOrderId(orderWithClientSkuIdForm);
+        normalizeOrderItemWithClientSkuIdForm(orderWithClientSkuIdForm.getFormList());
+
         List<String> clientSkuIds = orderWithClientSkuIdForm.getFormList().stream().
                 map(OrderItemWithClientSkuId::getClientSkuId).collect(Collectors.toList());
         Map<String, Long> clientSkuToGlobalSku= getCheckClientSkuId(orderWithClientSkuIdForm.getClientId(), clientSkuIds);
@@ -59,7 +64,7 @@ public class OrderDto extends AbstractDto {
 
     public OrderData addOrderUsingChannelSkuIds(OrderWithChannelSkuIdForm form) throws ApiException {
         validateOrderByChannelApiForm(form);
-        checkClientIdAndCustomerId(form.getClientId(), form.getCustomerId());
+        checkClientIdAndCustomerIdAndChannelOrderId(form);
         List<String> channelSkuIds = form.getOrderItemWithChannelSkuIdList().stream()
                 .map(OrderItemWithChannelSkuId::getChannelSkuId).collect(Collectors.toList());
         Map<String, Long> channelSkuToGlobalSku = getCheckChannelSkuId(form.getClientId(),form.getChannelId(), channelSkuIds);
@@ -96,8 +101,19 @@ public class OrderDto extends AbstractDto {
 
     }
 
-    public List<OrderItemData> getOrderItems(Long orderId){
-        return convert(service.getItemsByOrderId(orderId), OrderItemData.class);
+    public List<OrderDetailsData> getOrderItems(Long orderId){
+        List<OrderItemPojo> pojoList = service.getItemsByOrderId(orderId);
+        List<Long> globalsSkuIds = pojoList.stream().map(OrderItemPojo::getGlobalSkuId).collect(Collectors.toList());
+        Map<Long, ProductPojo> GlobalSkuToProductPojo = productService.getByGlobalSkuIds(globalsSkuIds);
+        List<OrderDetailsData> dataList = new ArrayList<>();
+
+        for(OrderItemPojo p : pojoList){
+            OrderDetailsData d = convert(p, OrderDetailsData.class);
+            d.setClientSkuId(GlobalSkuToProductPojo.get(p.getGlobalSkuId()).getClientSkuId());
+            d.setBrandId(GlobalSkuToProductPojo.get(p.getGlobalSkuId()).getBrandId());
+            dataList.add(d);
+        }
+        return dataList;
     }
 
     public void checkAndAllocateOrder(Long id){
@@ -110,8 +126,11 @@ public class OrderDto extends AbstractDto {
         service.changeStatusToAllocated(id);
     }
 
-    public OrderData searchByOrderId(Long orderId) throws ApiException {
-        return convert(service.getCheckOrder(orderId), OrderData.class);
+    public List<OrderData> searchByOrderId(Long orderId) throws ApiException {
+        OrderData data  = convert(service.getCheckOrder(orderId), OrderData.class);
+        List<OrderData> dataList = new ArrayList<>();
+        dataList.add(data);
+        return dataList;
     }
 
     public List<OrderData> searchOrder(OrderSearchForm form) throws ApiException {
@@ -184,9 +203,25 @@ public class OrderDto extends AbstractDto {
         }
     }
 
-    private void checkClientIdAndCustomerId(Long clientId, Long customerId) throws ApiException {
-        partyService.getCheck(clientId);
-        partyService.getCheck(customerId);
+    private void checkClientIdAndCustomerIdAndChannelOrderId(OrderWithClientSkuIdForm form) throws ApiException {
+        partyService.getCheck(form.getClientId());
+        partyService.getCheck(form.getCustomerId());
+        ChannelPojo channelPojo = channelService.getCheckChannelByName("internal");
+        OrderPojo orderPojo = service.getByChannelIdAndChannelOrderId(channelPojo.getId(), form.getChannelOrderId());
+        if(Objects.nonNull(orderPojo)){
+            throw new ApiException("Channel Order ID: "+form.getChannelOrderId()+" already exists");
+        }
+
+    }
+
+    private void checkClientIdAndCustomerIdAndChannelOrderId(OrderWithChannelSkuIdForm form) throws ApiException {
+        partyService.getCheck(form.getClientId());
+        partyService.getCheck(form.getCustomerId());
+        OrderPojo orderPojo = service.getByChannelIdAndChannelOrderId(form.getChannelId(), form.getChannelOrderId());
+        if(Objects.nonNull(orderPojo)){
+            throw new ApiException("Channel Order ID: "+form.getChannelOrderId()+" already exists");
+        }
+
     }
 
 
@@ -220,6 +255,7 @@ public class OrderDto extends AbstractDto {
         validateChannelOrderId(orderWithClientSkuIdForm.getChannelOrderId());
         List<String> clientSkuIds = orderWithClientSkuIdForm.getFormList().stream().map(OrderItemWithClientSkuId::getClientSkuId)
                 .collect(Collectors.toList());
+        clientSkuIds = normalizeClientSkus(clientSkuIds);
         validateEmptyFields(clientSkuIds, "Client SKU ID(s)");
         checkDuplicates(clientSkuIds, "Client SKU ID(s)");
 
@@ -256,6 +292,9 @@ public class OrderDto extends AbstractDto {
             service.insertOrderItem(orderItemPojo);
         }
     }
+
+
+
 
 
 

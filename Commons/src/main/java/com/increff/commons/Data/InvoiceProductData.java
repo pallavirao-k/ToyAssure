@@ -14,6 +14,8 @@ public class InvoiceProductData {
 
     @XmlElement(name="productName")
     private String productName;
+    @XmlElement(name="clientSkuId")
+    private String clientSkuId;
     @XmlElement(name="quantity")
     private Long qty;
     @XmlElement(name="sellingPricePerUnit")

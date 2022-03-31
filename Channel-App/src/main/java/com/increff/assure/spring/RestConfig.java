@@ -18,8 +18,8 @@ public class RestConfig {
 
             var factory = new SimpleClientHttpRequestFactory();
 
-            factory.setConnectTimeout(3000);
-            factory.setReadTimeout(3000);//TODO 45sec
+            factory.setConnectTimeout(45000);
+            factory.setReadTimeout(45000);//TODO 45sec
 
             return new RestTemplate(factory);
     }

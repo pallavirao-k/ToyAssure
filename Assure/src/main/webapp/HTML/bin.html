@@ -16,21 +16,30 @@
 
 </header>
 
+<div class = "container-fluid" style="position:absolute; top: 21%;  width:100%;">
 <div class="custom-select" style="width:500px;">
-<select class="selection"id="inputBinIdSearch" name="bintId"
-        style="position: absolute; top: 23%; right:24%; width:150px;"></select>
+    <label for="inputBinIdSearch" class="row-sm-2" style="position: absolute; top: 24%; right:48%;">
+        <strong>Bin ID</strong> </label>
+    <input type="text" class="form-control" name="bintId"
+           id = "inputBinIdSearch" placeholder="Enter Bin ID"
+           style="position: absolute; top: 23%; right:34%; width:190px;">
 </div>
 
 <div class="custom-select" style="width:500px;">
-    <select class="selection"id="inputGlobalSkuIdSearch" name="globalSkuId"
-            style="position: absolute; top: 23%; right:10%; width:150px;"></select>
+    <label for="inputGlobalSkuIdSearch" class="row-sm-2" style="position: absolute; top: 24%; right:24%;">
+        <strong>Global SKU ID </strong></label>
+    <input type="text" class="form-control" name="globalSkuId"
+           id = "inputGlobalSkuIdSearch" placeholder="Enter Bin ID"
+           style="position: absolute; top: 23%; right:10%; width:190px;">
+
 </div>
 
 <button type="button" class="btn btn-outline-primary mx-1" id="search"
         style="position: absolute; top: 23%; right:3%;">
     Search</button>
+</div>
 
-<div class="container-fluid px-5 mt-5 pt-3">
+<div class="container-fluid px-5 mt-4 pt-3">
     <div>
         <h2 class="my-3">Bin</h2>
         <div>
@@ -45,7 +54,7 @@
         </div>
     </div>
 
-    <div class="modal" tabindex="-1" role="dialog" id="add-bin-modal">
+    <div class="modal" tabindex="-1" role="dialog" id="add-bin-modal" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -84,17 +93,27 @@
             <table class="table table-striped" id="bin-sku-table">
                 <thead>
                 <tr>
-                    <th scope="col">S.No.</th>
                     <th scope="col">Bin ID</th>
                     <th scope="col">Global SKU ID</th>
                     <th scope="col">Quantity</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col">Action</th>
 
                 </tr>
                 </thead>
                 <tbody>
 
                 </tbody>
+                <tfoot>
+                <tr>
+                    <th scope="col">Bin ID</th>
+                    <th scope="col">Global SKU ID</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Action</th>
+
+                </tr>
+                </tfoot>
+
+
             </table>
 
 
@@ -104,12 +123,12 @@
 
 
     <!-- Employee Edit Modal -->
-    <div class="modal" tabindex="-1" role="dialog" id="edit-bin-sku-modal">
+    <div class="modal" tabindex="-1" role="dialog" id="edit-bin-sku-modal" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Bin SKU</h5>
+                    <h5 class="modal-title">Edit Bin Inventory</h5>
                 </div>
                 <div class="modal-body">
                     <form class="form-inline" id="bin-sku-edit-form">
@@ -141,12 +160,12 @@
 
     <!-- Employee Edit Modal -->
     <div class="modal" tabindex="-1" role="dialog"
-         id="upload-bin-sku-modal">
+         id="upload-bin-sku-modal" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Upload Bin SKU</h5>
+                    <h5 class="modal-title">Upload Bin Inventory</h5>
                 </div>
 
                 <div class="modal-body">
@@ -167,7 +186,7 @@
 
 
 
-                    <a th:href="@{/sample/product_sample.tsv}" target="_blank">Download
+                    <a th:href="@{/ToyAssureCSV/binSkuCSV.csv}" target="_blank">Download
                         Sample</a>
                     <div id="row-box" style="display: none;">
                         <br> Rows: <span id="rowCount">0</span>, Processed: <span

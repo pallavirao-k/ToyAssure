@@ -1,6 +1,7 @@
 package com.increff.assure.controller;
 
 import com.increff.assure.dto.ChannelAppDto;
+import com.increff.commons.Data.ChannelInvoiceData;
 import com.increff.commons.Data.InvoiceData;
 import com.increff.commons.Data.InvoiceResponse;
 import com.increff.commons.Data.OrderData;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Api
 @RestController
@@ -36,7 +39,7 @@ public class ChannelAppController {
 
     @ApiOperation(value = "generate invoice")
     @RequestMapping(path = "/invoice", method= RequestMethod.POST)
-    public String generateInvoice(@RequestBody InvoiceData invoiceData) throws Exception {
+    public String generateInvoice(@RequestBody ChannelInvoiceData invoiceData) throws Exception {
         return dto.generateInvoice(invoiceData);
     }
 

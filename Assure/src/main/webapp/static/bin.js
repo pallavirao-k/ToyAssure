@@ -27,6 +27,10 @@ Papa.parse(document.getElementById('employeeFile').files[0],
     header:true,
     skipEmptyLines: true,
     complete: function(results){
+            if(results.data.length>5000){
+                showError("Error: CSV rows must be less than 5000");
+                return false;
+                }
             cId = $("#inputClientId").val();
             const data = {clientId:cId, formList:results.data};
             var jsonData = JSON.stringify(data);
@@ -51,7 +55,7 @@ function addEmployee(jsonData) {
 		success: function(data, textStatus, xhr) {
 			$('#upload-bin-sku-modal').modal('toggle');
 			$("#upload-bin-sku-form").trigger("reset");
-			showSuccess("Bin SKU added");
+			showSuccess("Success");
 			getEmployeeList();     //...
 		},
 		error: function(data) {
@@ -99,7 +103,7 @@ function addBin() {
 
 			$('#upload-bin-modal').modal('toggle');
 			$("#upload-bin-form").trigger("reset");
-			showSuccess("Bins added");
+			showSuccess("Success");
 
 		},
 		error: function(data) {
@@ -130,7 +134,7 @@ function updateEmployee(event) {
 			'Content-Type': 'application/json'
 		},
 		success: function(data, textStatus, xhr) {
-			showSuccess("Bin SKU updated");
+			showSuccess("Success");
 			getEmployeeList();     //...
 		},
 		error: function(data) {
@@ -173,7 +177,6 @@ function displayEmployeeList(data) {
 		var e = data[i];
         var buttonHtml = ' <button type="button" class="btn btn-outline-primary border-0" data-toggle="tooltip" title="Edit" onclick="displayEditEmployee(' + e.id + ')"><i class="bi bi-pencil-fill"></i></button>';
 		var row = '<tr>'
-			+ '<td>' + c + '</td>'
 			+ '<td>' + e.binId + '</td>'
 			+ '<td>' + e.globalSkuId + '</td>'
 			+ '<td>' + e.qty + '</td>'
@@ -394,7 +397,7 @@ function dropdown2(){
 		var e = data[i];
 		var opt = document.createElement('option');
 		opt.value = e.globalSkuId;
-		opt.innerHTML = e.productName;
+		opt.innerHTML = e.globalSkuId;
 		select.appendChild(opt);
 	}
 	var opt = document.createElement('option');

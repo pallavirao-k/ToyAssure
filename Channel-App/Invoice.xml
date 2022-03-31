@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<items>
+    <orderId>702</orderId>
+    <channelName>amazon</channelName>
+    <clientName>puma</clientName>
+    <customerName>nikshan</customerName>
+    <dateTime>31-03-2022 18:12</dateTime>
+    <total>100.0</total>
+    <item>
+        <productName>p1</productName>
+        <channelSkuId>chskuid1</channelSkuId>
+        <quantity>10</quantity>
+        <sellingPricePerUnit>10.0</sellingPricePerUnit>
+    </item>
+</items>

@@ -79,7 +79,7 @@ modal:nth-of-type(even) {
   cursor: pointer;
   line-height: 1.1;
   background-color: grey;
-  background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+  background-image: linear-gradient(to top, #E8E8E8, #E8E8E8 33%);
 }
 
 .selection1 {
@@ -93,7 +93,7 @@ modal:nth-of-type(even) {
   cursor: pointer;
   line-height: 1.1;
   background-color: grey;
-  background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+  background-image: linear-gradient(to top, #DCDCDC, #fff 33%);
 }
 
 .toast{

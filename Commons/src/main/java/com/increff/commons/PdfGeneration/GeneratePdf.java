@@ -53,7 +53,7 @@ public class GeneratePdf {
         byte[] byteArray = ((java.io.ByteArrayOutputStream) out).toByteArray();
 
         // serialize PDF to Base64
-       // byte[] encodedBytes = Base64.getEncoder().encode(byteArray);
+       byte[] encodedBytes = Base64.getEncoder().encode(byteArray);
 
         return byteArray;
 

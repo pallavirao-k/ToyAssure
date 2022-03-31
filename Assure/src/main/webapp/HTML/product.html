@@ -16,29 +16,34 @@
 
 </header>
 
-
+<div class = "container-fluid" style="position:absolute; top: 21%;  width:100%;">
 <div class="custom-select" style="width:500px;">
+  <label for="inputClientIdSearch" class="row-sm-2" style="position: absolute; top: 24%; right:48%;">
+    Client: </label>
   <select class="selection"id="inputClientIdSearch" name="clientId"
-          style="position: absolute; top: 23%; right:24%; width:150px;"></select>
+          style="position: absolute; top: 23%; right:34%; width:100px;"></select>
 </div>
 
 <div class="custom-select" style="width:500px;">
-  <select class="selection"id="inputClientSkuIdSearch" name="clientSkuId"
-          style="position: absolute; top: 23%; right:10%; width:150px;"></select>
+  <label for="inputClientSkuIdSearch" class="row-sm-2" style="position: absolute; top: 24%; right:24%;">
+    <strong>Client SKU ID </strong></label>
+  <input type="text" class="form-control" name="clientSkuId"
+         id = "inputClientSkuIdSearch" placeholder="Enter Client SKU ID"
+         style="position: absolute; top: 23%; right:10%; width:190px;">
 </div>
 
 <button type="button" class="btn btn-outline-primary mx-1" id="searchClientId"
           style="position: absolute; top: 23%; right:3%;">
     Search</button>
 
-
-<div class="container-fluid px-5 mt-5 pt-3">
+</div>
+<div class="container-fluid px-5 mt-4 pt-3">
   <div>
-    <h2 class="my-3">Product Master</h2>
+    <h2 class="my-3">Product</h2>
     <div>
       <button type="button" class="btn btn-sm btn-outline-primary mx-1"
               data-toggle="modal" data-target="#upload-employee-modal">
-        Upload Products</button>
+        Upload </button>
 
       <button type="button" class="btn btn-sm btn-outline-dark mx-1"
               onclick="location.reload()">Refresh</button>
@@ -56,20 +61,33 @@
       <table class="table table-striped" id="product-table">
         <thead>
         <tr>
-          <th scope="col">S.No.</th>
           <th scope="col">Name</th>
           <th scope="col">Client ID</th>
           <th scope="col">Client SKU ID</th>
           <th scope="col">Brand ID</th>
           <th scope="col">MRP</th>
           <th scope="col">Description</th>
-          <th scope="col">Actions</th>
+          <th scope="col">Action</th>
 
         </tr>
         </thead>
         <tbody>
 
         </tbody>
+        <tfoot>
+        <tr>
+          <th scope="col">Name</th>
+          <th scope="col">Client ID</th>
+          <th scope="col">Client SKU ID</th>
+          <th scope="col">Brand ID</th>
+          <th scope="col">MRP</th>
+          <th scope="col">Description</th>
+          <th scope="col">Action</th>
+
+        </tr>
+        </tfoot>
+
+
       </table>
 
 
@@ -79,12 +97,15 @@
 
 
   <!-- Employee Edit Modal -->
-  <div class="modal" tabindex="-1" role="dialog" id="edit-product-modal">
+  <div class="modal" tabindex="-1" role="dialog" id="edit-product-modal" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
 
         <div class="modal-header">
           <h5 class="modal-title">Edit Product</h5>
+          <div class = "text-info" style="position: relative;font-weight: bold;">
+            <span id="spanB"></span>
+          </div>
         </div>
         <div class="modal-body">
           <form class="form-inline" id="product-edit-form">
@@ -134,7 +155,7 @@
 
   <!-- Employee Edit Modal -->
   <div class="modal" tabindex="-1" role="dialog"
-       id="upload-employee-modal">
+       id="upload-employee-modal" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
 
@@ -160,7 +181,7 @@
 
 
 
-          <a th:href="@{/sample/product_sample.tsv}" target="_blank">Download
+          <a th:href="@{/ToyAssureCSV/productCSV.csv}" target="_blank">Download
             Sample</a>
           <div id="row-box" style="display: none;">
             <br> Rows: <span id="rowCount">0</span>, Processed: <span
