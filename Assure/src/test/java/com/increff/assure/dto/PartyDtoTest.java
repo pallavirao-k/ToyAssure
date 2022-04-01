@@ -31,6 +31,7 @@ public class PartyDtoTest extends AbstractUnitTest {
         public void testAddValid1() throws ApiException {
 
             List<PartyPojo> data_before = dao.selectAll();
+            assertEquals(0, dao.selectAll().size());
             PartyForm form = getPartyForm();
             dto.add(form);
             List<PartyPojo> data_after = dao.selectAll();
@@ -45,6 +46,7 @@ public class PartyDtoTest extends AbstractUnitTest {
     public void testAddValid2() throws ApiException {
 
         List<PartyPojo> data_before = dao.selectAll();
+        assertEquals(0, dao.selectAll().size());
         PartyForm form = getPartyForm();
         form.setPartyName("    nikShan    ");
         dto.add(form);
