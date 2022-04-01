@@ -20,8 +20,8 @@ public class ClientWrapper {
     @Autowired
     private RestTemplateUrls restTemplateUrls;
 
-    public String postForOrderInAssure(OrderWithChannelSkuIdForm form){
-        return restTemplate.postForObject(restTemplateUrls.getAssureOrderUri(), form, String.class);
+    public OrderData postForOrderInAssure(OrderWithChannelSkuIdForm form){
+        return restTemplate.postForObject(restTemplateUrls.getAssureOrderUri(), form, OrderData.class);
     }
 
     public List<OrderData> postForOrderSearch(OrderSearchForm form){

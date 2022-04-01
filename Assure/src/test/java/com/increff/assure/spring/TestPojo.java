@@ -6,6 +6,7 @@ import com.increff.commons.Constants.Invoice;
 import com.increff.commons.Constants.OrderStatus;
 import com.increff.commons.Constants.Party;
 import com.increff.commons.Form.*;
+import org.hibernate.criterion.Order;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,6 +175,18 @@ public class TestPojo {
             return form;
         }
 
+        public static OrderItemPojo createOrderItemPojo(Long orderId, Long globalSkuId, Long orderedQty
+                , Long allocatedQty, Long fulfilledQty, Double sellingPrice){
+            OrderItemPojo pojo = new OrderItemPojo();
+            pojo.setOrderId(orderId);
+            pojo.setGlobalSkuId(globalSkuId);
+            pojo.setOrderedQty(orderedQty);
+            pojo.setAllocatedQty(allocatedQty);
+            pojo.setFulfilledQty(fulfilledQty);
+            pojo.setSellingPricePerUnit(sellingPrice);
+            return pojo;
+        }
+
         public static InventoryPojo createInventoryPojo(Long globalSkuId, Long availabaleQty, Long allocatedQty
                 , Long fulfilledQty){
             InventoryPojo pojo = new InventoryPojo();
@@ -191,6 +204,38 @@ public class TestPojo {
             form.setClientId(clientId);
             form.setCustomerId(customerId);
             form.setChannelOrderId(channelOrderId);
+            return form;
+        }
+
+        public static OrderItemWithChannelSkuId createOrderItemWithChannelSkuId(String channelSkuId, Long qty
+                    , Double sellingPrice){
+            OrderItemWithChannelSkuId form = new OrderItemWithChannelSkuId();
+            form.setChannelSkuId(channelSkuId);
+            form.setQty(qty);
+            form.setSellingPricePerUnit(sellingPrice);
+            return form;
+        }
+
+        public static OrderWithChannelSkuIdForm createOrderWithChannelSkuIdForm(Long channelId, String channelOrderId
+        , List<OrderItemWithChannelSkuId> orderItems, Long clientId, Long customerId){
+            OrderWithChannelSkuIdForm form = new OrderWithChannelSkuIdForm();
+            form.setChannelId(channelId);
+            form.setChannelOrderId(channelOrderId);
+            form.setOrderItemWithChannelSkuIdList(orderItems);
+            form.setClientId(clientId);
+            form.setCustomerId(customerId);
+            return form;
+        }
+
+        public static OrderSearchForm createOrderSearchForm(String startDate, String endDate, Long channelId,
+                                                            String channelOrderId, OrderStatus orderStatus){
+
+            OrderSearchForm form = new OrderSearchForm();
+            form.setStartDate(startDate);
+            form.setEndDate(endDate);
+            form.setChannelId(channelId);
+            form.setChannelOrderId(channelOrderId);
+            form.setOrderStatus(orderStatus);
             return form;
         }
 

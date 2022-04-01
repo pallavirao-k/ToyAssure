@@ -19,7 +19,7 @@
 <div class = "container-fluid" style="position:absolute; top: 21%;  width:100%;">
 <div class="custom-select" style="width:500px;">
   <label for="inputClientIdSearch" class="row-sm-2" style="position: absolute; top: 24%; right:48%;">
-    Client: </label>
+    <strong>Client </strong></label>
   <select class="selection"id="inputClientIdSearch" name="clientId"
           style="position: absolute; top: 23%; right:34%; width:100px;"></select>
 </div>
@@ -74,7 +74,7 @@
         <tbody>
 
         </tbody>
-        <tfoot>
+        <tfoot id ="footer" style="display:none;">
         <tr>
           <th scope="col">Name</th>
           <th scope="col">Client ID</th>
@@ -166,7 +166,8 @@
         <div class="modal-body">
           <form>
             <div class="col">
-              <label for="inputClientId" class="col-sm-2 col-form-label">ClientName</label>
+              <label for="inputClientId" class="col-sm-2 col-form-label" style="width:150px;">
+                <strong>Client Name</strong>></label>
               <div class="custom-select" style="width:500px;">
                 <select class="selection"id="inputClientId" name="clientId"></select>
               </div>

@@ -17,7 +17,7 @@
 
 <div class="container-fluid" style="position:absolute; width:100%;">
     <label for="searchType" class="col-sm-2 col-form-label" style="position: absolute; top: 21%; right: 11%;">
-        Search By:</label>
+        <strong>Search By</strong></label>
     <select class="selection"id="searchType" name="search-type"
             style="position: absolute; top: 21%; right:7%; width:100px;">
         <option id = "order" value="1">Order ID</option>
@@ -50,7 +50,8 @@
                 <div class="row">
                     <div class="col">
 
-                        <label for="inputStartdate" class="col-sm-2 col-form-label">StartDate</label>
+                        <label for="inputStartdate" class="col-sm-2 col-form-label" style="width:150px;">
+                            <strong>Start Date</strong></label>
                         <div class="col">
                             <div class="input-group date" id="datepicker1">
                                 <input type="text" class="form-control" name="startDate"
@@ -64,7 +65,8 @@
                         </div>
                     </div>
                     <div class="col">
-                        <label for="inputEnddate" class="col-sm-2 col-form-label">EndDate</label>
+                        <label for="inputEnddate" class="col-sm-2 col-form-label" style="width:150px;">
+                            <strong>End Date</strong></label>
                         <div class="col">
                             <div class="input-group date" id="datepicker2">
                                 <input type="text" class="form-control" name="endDate"
@@ -79,22 +81,26 @@
                     </div>
 
                     <div class="col">
-                        <label for="inputChannelId" class="col-sm-2 col-form-label">ChannelID</label>
+                        <label for="inputChannelId" class="col-sm-2 col-form-label" style="width:150px;">
+                            <strong>Channel Name</strong></label>
                         <div class="col">
-                            <input type="text" class="form-control" name="channelId"
-                                   id="inputChannelId" placeholder="Enter Channel ID">
+                            <div class="custom-select" style="width:300px;">
+                                <select class="selection"id="inputChannelId" name="channelId"></select>
+                            </div>
                         </div>
                     </div>
 
                     <div class="col">
-                        <label for="inputChannelOrderIdSearch" class="col-sm-2 col-form-label">ChannelOrderId</label>
+                        <label for="inputChannelOrderIdSearch" class="col-sm-2 col-form-label" style="width:200px;">
+                            <strong>Channel Order Id</strong></label>
                         <div class="col">
                             <input type="text" class="form-control" name="channelOrderId"
                                    id="inputChannelOrderIdSearch" placeholder="Enter Channel Order ID">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="inputOrderStatus" class="col-sm-2 col-form-label">OrderStatus</label>
+                        <label for="inputOrderStatus" class="col-sm-2 col-form-label" style="width:150px;">
+                            <strong>Order Status</strong></label>
                         <div class="col-sm-10">
                             <div class="custom-select" style="width:200px;">
                                 <select class="selection"id="inputOrderStatus" name="orderStatus">
@@ -119,7 +125,8 @@
             <form>
                 <div id="select-by-orderId" style="display:none;">
                 <div class="col">
-                    <label for="inputOrderIdSearch" class="col-sm-2 col-form-label">OrderID</label>
+                    <label for="inputOrderIdSearch" class="col-sm-2 col-form-label" style="width:150px;">
+                        <strong>Order ID</strong>></label>
                     <div class="col">
                         <input type="text" class="form-control" name="OrderId"
                                id="inputOrderIdSearch" placeholder="Order Id" style="width:250px;">
@@ -156,7 +163,7 @@
                 <tbody>
 
                 </tbody>
-                <tfoot>
+                <tfoot id ="footer" style="display:none;">
                 <tr>
                     <th scope="col">Client ID</th>
                     <th scope="col">Customer ID</th>
@@ -237,21 +244,24 @@
                 <div class="modal-body">
                     <form id="upload-order-form">
                         <div class="col">
-                            <label for="inputClientId" class="col-sm-2 col-form-label">ClientName</label>
+                            <label for="inputClientId" class="col-sm-2 col-form-label" style="width:150px;">
+                                <strong>Client Name</strong></label>
                             <div class="custom-select" style="width:500px;">
                                 <select class="selection"id="inputClientId" name="clientId"></select>
                             </div>
                         </div>
 
                         <div class="col">
-                            <label for="inputCustomerId" class="col-sm-2 col-form-label">CustomerName</label>
+                            <label for="inputCustomerId" class="col-sm-2 col-form-label" style="width:150px;">
+                                <strong>Customer Name</strong></label>
                             <div class="custom-select" style="width:500px;">
                                 <select class="selection"id="inputCustomerId" name="customerId"></select>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="inputChannelOrderId" class="col-sm-2 col-form-label">ChannelOrderID</label>
+                            <label for="inputChannelOrderId" class="col-sm-2 col-form-label" style="width:150px;">
+                                <strong>Channel Order ID</strong></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="channelOrderId"
                                      id="inputChannelOrderId"  placeholder="Enter Channel Order ID">

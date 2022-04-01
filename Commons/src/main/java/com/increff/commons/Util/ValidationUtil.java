@@ -6,6 +6,7 @@ import com.increff.commons.Exception.ApiException;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,8 +26,11 @@ public class ValidationUtil {
         }
     }
 
-    public  static void checkDatesLimit(LocalDateTime startDate, LocalDateTime endDate) throws ApiException {
-        if(Period.between(startDate.toLocalDate(), endDate.toLocalDate()).getDays()>MAX_DAYS_DIFFERENCE){
+    public  static void checkDatesLimit(ZonedDateTime startDate, ZonedDateTime endDate) throws ApiException {
+        if(startDate.isAfter(endDate)){
+            throw new ApiException("Start Date should be before End Date");
+        }
+        if(ChronoUnit.DAYS.between(startDate, endDate)>MAX_DAYS_DIFFERENCE){
             throw new ApiException("Difference between Start Date and End Date must not exceed "+ MAX_DAYS_DIFFERENCE);
         }
     }

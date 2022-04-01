@@ -9,6 +9,11 @@ function getPartyUrl() {
 	return baseUrl + "/api/parties";
 }
 
+function getChannelUrl() {
+	var baseUrl = $("meta[name=baseUrl]").attr("content")
+	return baseUrl + "/api/channels";
+}
+
 function getProductUrl() {
 	var baseUrl = $("meta[name=baseUrl]").attr("content")
 	return baseUrl + "/api/products";
@@ -29,7 +34,7 @@ Papa.parse(document.getElementById('employeeFile').files[0],
     skipEmptyLines: true,
     complete: function(results){
             if(results.data.length>5000){
-                showError("Error: CSV rows must be less than 5000");
+                showError("CSV rows must be less than 5000");
                 return false;
             }
 
@@ -63,7 +68,7 @@ function addEmployee(jsonData) {
 		error: function(data) {
 
 		    var response = JSON.parse(data.responseText);
-			showError("Error: " + response.message);
+			showError(response.message);
 		}
 	});
 
@@ -88,7 +93,7 @@ function searchOrder(event) {
             displayEmployeeList(data);
 		},
 		error: function(data, textStatus, xhr) {
-			showError("Error: " + data.responseText);
+			showError(data.responseText);
 		}
 	});
 
@@ -108,7 +113,7 @@ function searchOrder2(event) {
             displayEmployeeList(data);
 		},
 		error: function(data, textStatus, xhr) {
-			showError("Error: " + data.responseText);
+			showError(data.responseText);
 		}
 	});
 
@@ -117,6 +122,9 @@ function searchOrder2(event) {
 
 
 function displayEmployeeList(data) {
+    if(data.length>5){
+        document.getElementById('footer').style.display = "";
+        }
 	var $tbody = $('#order-table').find('tbody');
 	$tbody.empty();
 	for (var i in data) {
@@ -156,7 +164,7 @@ function getOrderItems(id){
     	   },
     	   error: function(data){
     	   		 var response = JSON.parse(data.responseText);
-                 showError("Error: " + response.message);
+                 showError(response.message);
     	   }
     	});
     }
@@ -174,14 +182,13 @@ function getInvoice(id){
         	   },
         	   error: function(data){
         	   		 var response = JSON.parse(data.responseText);
-                     showError("Error: " + response.message);
+                     showError(response.message);
         	   }
         	});
         }
 
 
 function displayOrderItemList(data){
-	//console.log('Printing orderitem data');
 	var $tbody = $('#order-item-table').find('tbody');
 	$tbody.empty();
 	for(var i in data){
@@ -215,7 +222,7 @@ function allocateOrder(id){
     	   },
     	   error: function(data){
     	   		 var response = JSON.parse(data.responseText);
-                 showError("Error: " + response.message);
+                 showError(response.message);
     	   }
     	});
     }
@@ -225,7 +232,6 @@ function allocateOrder(id){
 //HELPER METHOD
 function toJson($form) {
 	var serialized = $form.serializeArray();
-	//console.log(serialized);
 	var s = '';
 	var data = {};
 	for (s in serialized) {
@@ -344,6 +350,7 @@ $(document).ready(init);
 $(document).ready(show);
 $(document).ready(dropdown1);
 $(document).ready(dropdown2);
+$(document).ready(dropdown3);
 
 function show(){
 	$("#datepicker1").datepicker({
@@ -454,3 +461,35 @@ function DownloadFile(fileUrl) {
             };
             req.send();
         };
+
+
+function dropdown3(){
+
+	var url = getChannelUrl();
+	$.ajax({
+	   url: url,
+	   type: 'GET',
+	   success: function(data) {
+		var select = document.getElementById('inputChannelId');
+		for(var i in data){
+		var e = data[i];
+		var opt = document.createElement('option');
+		opt.value = e.id;
+		opt.innerHTML = e.channelName;
+		select.appendChild(opt);
+	}
+	var opt = document.createElement('option');
+    		opt.value = null;
+    		opt.innerHTML = "None";
+    		select.appendChild(opt);
+
+
+},
+	   error: function(){
+	   		showError("An error has occurred");
+	   }
+	});
+
+
+}
+

@@ -58,9 +58,6 @@ public class OrderController {
     @ApiOperation(value = "search order")
     @RequestMapping(path = "/search", method= RequestMethod.POST)
     public List<OrderData> searchOrder(@RequestBody OrderSearchForm orderSearchForm) throws ApiException {
-        System.out.println("'"+orderSearchForm.getEndDate()+"'");
-        System.out.println("'"+orderSearchForm.getChannelOrderId()+"'");
-        System.out.println("'"+orderSearchForm.getChannelId()+"'");
         return dto.searchOrder(orderSearchForm);
     }
 

@@ -52,7 +52,7 @@ function addEmployee(jsonData) {
 		},
 		error: function(data) {
 		    var response = JSON.parse(data.responseText);
-			showError("Error: " + response.message);
+			showError(response.message);
 		}
 	});
 
@@ -82,7 +82,7 @@ function updateEmployee(event) {
 		},
 		error: function(data) {
 		    var response = JSON.parse(data.responseText);
-			showError("Error: " + response.message);
+			showError(response.message);
 		}
 	});
 
@@ -109,13 +109,15 @@ function getEmployeeList() {
 			displayEmployeeList(data);     //...
 		},
 		error: function(data) {
-			showError("Error: "+data.responseText);
+			showError(data.responseText);
 		}
 	});
 }
 
 function displayEmployeeList(data) {
-	//console.log('Printing employee data');
+	if(data.length>5){
+        document.getElementById('footer').style.display = "";
+        }
 	var $tbody = $('#product-table').find('tbody');
 	$tbody.empty();
 	var c = 1;

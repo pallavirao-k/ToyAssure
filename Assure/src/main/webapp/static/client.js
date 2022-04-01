@@ -23,7 +23,7 @@ function addParty() {
 		},
 		error: function(data) {
 			var response = JSON.parse(data.responseText);
-             showError("Error: " + response.message);
+             showError(response.message);
 		}
 	});
 
@@ -41,13 +41,15 @@ function getPartyList() {
 		},
 		error: function(data) {
 			var response = JSON.parse(data.responseText);
-            			showError("Error: " + response.message);
+            			showError(response.message);
 		}
 	});
 }
 
 function displayPartyList(data) {
-	//console.log('Printing employee data');
+	if(data.length>5){
+        document.getElementById('footer').style.display = "";
+        }
 	var $tbody = $('#party-table').find('tbody');
 	$tbody.empty();
 	var c = 1;
@@ -145,7 +147,6 @@ return json;
 
 function addClientFormValidation(){
     var name = $('#inputPartyName').val();
-    console.log(name.length);
     if(name.length>255){
     showError("Client Name length should not exceed 255");
     return false;

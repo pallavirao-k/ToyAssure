@@ -39,12 +39,6 @@ public class OrderService {
         return dao.selectByChannel(channelId, channelOrderId);
     }
 
-    public List<OrderPojo> getAllOrders(){
-        return dao.selectAll();
-    }
-    public List<OrderItemPojo> getAllOrderItems(){
-        return orderItemDao.selectAll();
-    }
 
     public void changeStatusToAllocated(Long id){
         OrderPojo orderPojo = dao.select(id);

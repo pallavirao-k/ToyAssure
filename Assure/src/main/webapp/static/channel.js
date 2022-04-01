@@ -83,7 +83,7 @@ function addEmployee(jsonData) {
 		error: function(data) {
 
 		    var response = JSON.parse(data.responseText);
-			showError("Error: " + response.message);
+			showError(response.message);
 		}
 	});
 
@@ -113,7 +113,7 @@ function addChannel() {
 		},
 		error: function(data) {
 		    var response = JSON.parse(data.responseText);
-			showError("Error: " + response.message);
+			showError(response.message);
 		}
 	});
 
@@ -130,12 +130,15 @@ function getEmployeeList() {
 		},
 		error: function(data) {
 			var response = JSON.parse(data.responseText);
-            showError("Error: " + response.message);
+            showError(response.message);
 		}
 	});
 }
 
 function displayEmployeeList(data) {
+    if(data.length>5){
+        document.getElementById('footer').style.display = "";
+        }
 	var $tbody = $('#channel-table').find('tbody');
 	$tbody.empty();
 	var c = 1;
@@ -309,6 +312,7 @@ function dropdownChannel(){
 		var select = document.getElementById('inputChannelId');
 		for(var i in data){
 		var e = data[i];
+		if(e.channelName == 'internal'){continue;}
 		var opt = document.createElement('option');
 		opt.value = e.id;
 		opt.innerHTML = e.channelName;

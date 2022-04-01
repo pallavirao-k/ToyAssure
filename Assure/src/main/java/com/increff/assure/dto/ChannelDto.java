@@ -50,11 +50,11 @@ public class ChannelDto extends AbstractDto {
     }
 
     private void checkDefault(ChannelForm form){
-        if(form.getChannelName() == (null)){
+        if(form.getChannelName() == null || form.getChannelName().isEmpty()){
             form.setChannelName("internal");
         }
         if(form.getInvoiceType() ==null){
-            form.setInvoiceType(Invoice.InvoiceType.CHANNEL);
+            form.setInvoiceType(Invoice.InvoiceType.SELF);
         }
     }
 

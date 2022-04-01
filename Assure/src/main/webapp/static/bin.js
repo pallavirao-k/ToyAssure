@@ -61,7 +61,7 @@ function addEmployee(jsonData) {
 		error: function(data) {
 
 		    var response = JSON.parse(data.responseText);
-			showError("Error: " + response.message);
+			showError(response.message);
 		}
 	});
 
@@ -108,7 +108,7 @@ function addBin() {
 		},
 		error: function(data) {
 		    var response = JSON.parse(data.responseText);
-			showError("Error: " + response.message);
+			showError(response.message);
 		}
 	});
 
@@ -139,7 +139,7 @@ function updateEmployee(event) {
 		},
 		error: function(data) {
 		    var response = JSON.parse(data.responseText);
-			showError("Error: " + response.message);
+			showError(response.message);
 		}
 	});
 
@@ -164,12 +164,15 @@ function getEmployeeList() {
 		},
 		error: function(data) {
 			var response = JSON.parse(data.responseText);
-            showError("Error: " + response.message);
+            showError(response.message);
 		}
 	});
 }
 
 function displayEmployeeList(data) {
+    if(data.length>5){
+    document.getElementById('footer').style.display = "";
+    }
 	var $tbody = $('#bin-sku-table').find('tbody');
 	$tbody.empty();
 	var c = 1;

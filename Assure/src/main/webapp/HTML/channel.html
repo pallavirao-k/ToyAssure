@@ -39,14 +39,15 @@
                 <div class="modal-body">
                     <form class="form-inline" id="channel-form">
                         <div class="form-group">
-                            <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+                            <label for="inputName" class="col-sm-2 col-form-label"><strong>Name</strong></label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" name="channelName"
                                       id="inputName" placeholder="Enter Channel Name">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="inputInvoiceType" class="col-sm-2 col-form-label">InvoiceType</label>
+                            <label for="inputInvoiceType" class="col-sm-2 col-form-label" style="width:150px;">
+                                <strong>Invoice Type</strong></label>
                             <div class="col-sm-10">
                                 <div class="custom-select" style="width:500px;">
                                     <select class="selection"id="inputInvoiceType" name="invoiceType">
@@ -83,7 +84,7 @@
 
                 </tbody>
 
-                <tfoot>
+                <tfoot id ="footer" style="display:none;">
                 <tr>
                     <th scope="col">Name</th>
                     <th scope="col">Invoice Type</th>
@@ -109,13 +110,15 @@
                 <div class="modal-body">
                     <form id="upload-channel-listing-form">
                         <div class="col">
-                            <label for="inputClientId" class="col-sm-2 col-form-label">ClientName</label>
+                            <label for="inputClientId" class="col-sm-2 col-form-label" style="width:150px;">
+                                <strong>Client Name</strong></label>
                             <div class="custom-select" style="width:500px;">
                                 <select class="selection"id="inputClientId" name="clientId"></select>
                             </div>
                         </div>
                         <div class="col">
-                            <label for="inputChannelId" class="col-sm-2 col-form-label">ChannelName</label>
+                            <label for="inputChannelId" class="col-sm-2 col-form-label" style="width:150px;">
+                                <strong>ChannelName</strong></label>
                             <div class="custom-select" style="width:500px;">
                                 <select class="selection"id="inputChannelId" name="channelId"></select>
                             </div>

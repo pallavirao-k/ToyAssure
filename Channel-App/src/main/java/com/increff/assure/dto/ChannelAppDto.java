@@ -26,9 +26,10 @@ public class ChannelAppDto {
     @Autowired
     private ClientWrapper clientWrapper;
 
-    public void placeOrder(OrderWithChannelSkuIdForm form) {
-        clientWrapper.postForOrderInAssure(form);
+    public OrderData placeOrder(OrderWithChannelSkuIdForm form) {
+        return clientWrapper.postForOrderInAssure(form);
     }
+
     public String generateInvoice(ChannelInvoiceData invoiceData) throws Exception {
         return generatePdf(invoiceData);
 

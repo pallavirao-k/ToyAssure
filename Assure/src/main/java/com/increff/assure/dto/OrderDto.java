@@ -116,15 +116,6 @@ public class OrderDto extends AbstractDto {
         return dataList;
     }
 
-    public void checkAndAllocateOrder(Long id){
-        List<OrderItemPojo> orderItemPojoList = service.getItemsByOrderId(id);
-        for(OrderItemPojo orderItemPojo:orderItemPojoList){
-            if(orderItemPojo.getOrderedQty()!=orderItemPojo.getAllocatedQty()){
-                return;
-            }
-        }
-        service.changeStatusToAllocated(id);
-    }
 
     public List<OrderData> searchByOrderId(Long orderId) throws ApiException {
         OrderData data  = convert(service.getCheckOrder(orderId), OrderData.class);
@@ -136,7 +127,7 @@ public class OrderDto extends AbstractDto {
     public List<OrderData> searchOrder(OrderSearchForm form) throws ApiException {
         checkEmptyFields(form);
         if((form.getStartDate()!=null)^(form.getEndDate()!=null)){
-            throw new ApiException("Start Date and End Date must not be empty");
+            throw new ApiException("Both Start Date and End Date must be present");
         }
         if(form.getStartDate()!=null && form.getEndDate()!=null){
             List<ZonedDateTime> dates = checkAndConvertDates(form.getStartDate(), form.getEndDate());
@@ -149,6 +140,16 @@ public class OrderDto extends AbstractDto {
         List<OrderPojo> pojoList = service.searchOrderWithoutDates(properties);
         return convert(pojoList, OrderData.class);
 
+    }
+
+    private void checkAndAllocateOrder(Long id){
+        List<OrderItemPojo> orderItemPojoList = service.getItemsByOrderId(id);
+        for(OrderItemPojo orderItemPojo:orderItemPojoList){
+            if(orderItemPojo.getOrderedQty()!=orderItemPojo.getAllocatedQty()){
+                return;
+            }
+        }
+        service.changeStatusToAllocated(id);
     }
 
     private void checkEmptyFields(OrderSearchForm form){
@@ -173,7 +174,7 @@ public class OrderDto extends AbstractDto {
         ZoneId timeZone = ZoneId.systemDefault();
         ZonedDateTime startDateTime = LocalDate.parse(startDate, formatter).atStartOfDay().atZone(timeZone);
         ZonedDateTime endDateTime = LocalDate.parse(endDate, formatter).atStartOfDay().plusDays(1).atZone(timeZone);
-        //checkDatesLimit(startDateTime, endDateTime);
+        checkDatesLimit(startDateTime, endDateTime);
         List<ZonedDateTime> list = new ArrayList<>();
         list.add(startDateTime);
         list.add(endDateTime);

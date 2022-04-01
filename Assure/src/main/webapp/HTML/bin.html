@@ -63,7 +63,8 @@
                 <div class="modal-body">
                     <form class="form-inline" id="bin-form">
                         <div class="col">
-                            <label for="inputBinCount" class="col-sm-2 col-form-label">BinCount</label>
+                            <label for="inputBinCount" class="col-sm-2 col-form-label" style="width:150px;">
+                                <strong>Bin Count</strong></label>
                             <div class="col">
                                 <input type="number" class="form-control" name="binCount"
                                        id="inputBinCount" placeholder="Enter Bin Count" min="1"
@@ -103,7 +104,7 @@
                 <tbody>
 
                 </tbody>
-                <tfoot>
+                <tfoot id ="footer" style="display:none;">
                 <tr>
                     <th scope="col">Bin ID</th>
                     <th scope="col">Global SKU ID</th>
@@ -171,7 +172,8 @@
                 <div class="modal-body">
                     <form id="upload-bin-sku-form">
                         <div class="col">
-                            <label for="inputClientId" class="col-sm-2 col-form-label">ClientName</label>
+                            <label for="inputClientId" class="col-sm-2 col-form-label" style="width:150px;">
+                                <strong>Client Name</strong></label>
                             <div class="custom-select" style="width:500px;">
                                 <select class="selection"id="inputClientId" name="clientId"></select>
                             </div>

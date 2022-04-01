@@ -38,7 +38,7 @@ public class BinService extends AbstarctService{
     public void addBinSku(BinSkuPojo binSkuPojo) throws ApiException {
         BinSkuPojo binSkuPojoEx = binSkuDao.select(binSkuPojo.getBinId(), binSkuPojo.getGlobalSkuId());
         if(Objects.nonNull(binSkuPojoEx)) {
-            binSkuPojoEx.setQty(binSkuPojo.getQty()+binSkuPojo.getQty());
+            binSkuPojoEx.setQty(binSkuPojoEx.getQty()+binSkuPojo.getQty());
             return;
         }
         binSkuDao.insert(binSkuPojo);

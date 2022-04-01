@@ -120,7 +120,7 @@ public class BinServiceTest extends AbstractUnitTest {
         PartyPojo partyPojo = createMemberPojo("m1", Party.PartyType.CLIENT);
         partyDao.insert(partyPojo);
 
-        ProductPojo productPojo = createProductPojo("p1", "b1", "cskiud1", "desc1",
+        ProductPojo productPojo = createProductPojo("p1", "b1", "cskuiuiuiud1", "desc1",
                 10.0 ,partyPojo.getPartyId());
         productDao.insert(productPojo);
 
@@ -136,7 +136,7 @@ public class BinServiceTest extends AbstractUnitTest {
         List<BinSkuPojo> list_after = binSkuDao.selectAll();
 
         assertEquals(list_before.size()+1, list_after.size());
-        assertEquals(Long.valueOf(40), binSkuDao.select(binSkuPojo.getId()).getQty());
+        assertEquals(Long.valueOf(140), binSkuDao.select(binSkuPojo.getId()).getQty());
 
     }
 

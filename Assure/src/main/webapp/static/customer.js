@@ -22,7 +22,7 @@ function addParty() {
 			getPartyList();     //...
 		},
 		error: function(data) {
-			showError("Error: " + data);
+			showError(data);
 		}
 	});
 
@@ -39,13 +39,15 @@ function getPartyList() {
 			displayPartyList(data);     //...
 		},
 		error: function(data) {
-			showError("Error: " + data);
+			showError(data);
 		}
 	});
 }
 
 function displayPartyList(data) {
-	//console.log('Printing employee data');
+	if(data.length>5){
+        document.getElementById('footer').style.display = "";
+        }
 	var $tbody = $('#party-table').find('tbody');
 	$tbody.empty();
 	var c = 1;
